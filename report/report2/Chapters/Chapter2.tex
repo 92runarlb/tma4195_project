@@ -1,0 +1,88 @@
+% Chapter 1
+
+\chapter{Theory} % Main chapter title
+
+\label{Chapter2} % For referencing the chapter elsewhere, use \ref{Chapter1} 
+
+\section{Conservation of Mass}
+
+We consider a fluid occupying a domain $\Omega \subset \mathbb{R}^3$. Let $\rho = \rho(\bm{x}, t)$, and
+$\bm{v} = \bm{v}(\bm{x},t)$ denote the density and velocity of the fluid, respectively, at a position
+$\bm{x} = (x,y,z) \in \Omega$ at a time $t > 0$. We look at a control volume $R$, with surface $\partial R$.
+The rate of change of total mass in $R$ is then
+\begin{align}
+    \frac{d}{d t}\int_R \rho(\bm{x},t) \, d \bm{x}.
+\end{align}
+Consider now a small part of the surface $\partial R$, with area $ds$. Let $\bm{n}$ denote the outward normal
+of $\partial R$. The mass flux through this surface element is then $-\rho \bm{v} \cdot \bm{n} \, ds$, so the
+total mass flux through the boundary of $R$ is then
+\begin{align}
+    -\int_{\partial R}\rho \bm{v} \cdot \bm{n} \, ds.
+\end{align}
+Assuming that there are no sources or sinks within $R$, conservation of mass requires that
+\begin{align}
+    \frac{d}{d t}\int_R \rho(\bm{x},t) \, d \bm{x}
+                            = -\int_{\partial R}\rho \bm{v} \cdot \bm{n} \, ds.
+\end{align}
+Using the divergence theorem, and assuming that $\rho$ is smooth, so that the derivative can be moved inside
+the integral, we obtain
+\begin{align}
+    \int_R \big(\rho_t(\bm{x},t) + \nabla \cdot (\rho \bm{v}) \big) \, d \bm{x} = 0.
+\end{align}
+Now, this is true for any control volume $R \subset \Omega$. This gives that the integrand is zero. Indeed;
+if we assume that the integrand is zero at some point in $\Omega$, continuity of $\rho$ and $\bm{v}$
+gives that the integral would be positive, which is a contradiction. Hence, we have
+\begin{align}
+    \rho_t(\bm{x},t) + \nabla \cdot (\rho \bm{v}) = 0.
+\end{align}
+
+\section{Conservation of Momentum}
+
+We have
+\begin{align}
+	\begin{aligned}
+	    \frac{\d}{\d t} \int_{\Omega(t)} \rho \bm{v} \, \d V 
+	        & = \int_{\Omega(t)} \big(\frac{\partial}{\partial t}(\rho \bm{v})
+	                + \bm{v} \nabla \cdot (\rho \bm{v}) \big) \, \d V
+	                - \int_{\partial \Omega} \bm{v} \times (\rho \bm{v}) \, \d S \\
+	        & = \int_{\Omega(t)} \big(\frac{\partial}{\partial t}(\rho \bm{v})
+	                + \bm{v} \nabla \cdot (\rho \bm{v}) \big) \, \d V                
+	\end{aligned}
+\end{align}
+
+Div on each component
+\begin{align}
+    \int_{\partial \Omega} p \, \bm{n} \, d S = \int_{\Omega} \nabla p \, d V,
+\end{align}
+
+\begin{align}
+    \int_{\Omega(t)} \bigg(\frac{\partial}{\partial t}(\rho \bm{v})
+	                + \bm{v} \nabla \cdot (\rho \bm{v}) + \nabla p - \rho \bm{g} \bigg) \, \d V = 0
+\end{align}
+
+\begin{align}
+    \lim_{\Omega(t) \rightarrow 0} \frac{1}{|\Omega(t)|}\int_{\Omega(t)} \bigg(\frac{\partial}{\partial t}(\rho \bm{v})
+	                + \bm{v} \nabla \cdot (\rho \bm{v}) + \nabla p - \rho \bm{g} \bigg) \, \d V \\
+	                = \frac{\partial}{\partial t}(\rho \bm{v})
+	                + \bm{v} \nabla \cdot (\rho \bm{v}) + \nabla p - \rho \bm{g} = 0
+\end{align}
+
+Since $\phi$ is a scalar function, we have
+\begin{align}
+    \nabla \times (\nabla \phi) = \nabla \times (\phi_x, \phi_y, \phi_z) =
+        \big(\phi_{zy} - \phi_{yz}, -(\phi_{zx} - \phi_{xz}), \phi_{xy} - \phi_{yx} \big).
+\end{align}
+From the properties of the mixed partial derivative, we have $\phi_{x_i x_j} = \phi_{x_j x_i}$. Hence,
+\begin{align}
+    \nabla \times (\nabla \phi) = 0 \quad \forall \text{ scalar functions } \phi.
+\end{align}
+
+\section{Boundary Conditions}
+
+\begin{align}
+	\begin{cases}
+	    v\cdot \bm{n} = 0,    &  \quad  \forall (x,y) \in \mathbb{R}^2, z = -h(x,y) \\
+	    \eta(x,y,0) = f(x,y), &  \quad  \forall (x,y) \in \mathbb{R}^2
+	\end{cases}.
+\end{align}
+

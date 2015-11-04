@@ -1,0 +1,40 @@
+% Chapter 1
+
+\chapter{Introduction} % Main chapter title
+
+\label{Chapter1} % For referencing the chapter elsewhere, use \ref{Chapter1} 
+
+%----------------------------------------------------------------------------------------
+
+% Define some commands to keep the formatting separated from the content 
+\newcommand{\keyword}[1]{\textbf{#1}}
+\newcommand{\tabhead}[1]{\textbf{#1}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\file}[1]{\texttt{\bfseries#1}}
+\newcommand{\option}[1]{\texttt{\itshape#1}}
+
+%----------------------------------------------------------------------------------------
+
+In this modelling project, we will address three major phases in the development of a tsunami:
+\begin{enumerate}[label = \emph{(\roman*)}]
+    \item    The creation of a tsunami wave, when the kinetic energy of a falling rock is transferred to the
+             water,
+    \item    The propagation of the wave in the parts of the fjord where the bottom as approximately constant
+             elevation,
+    \item    The run-up of the wave when it reaches the end of the fjord and the height of the wave starts
+             increasing at the same time that its speed decreases.
+\end{enumerate}
+
+In the case of a tsunami event close to a populated area, two questions are of particular interest:
+\begin{enumerate}[label = \emph{(\roman*)}]
+    \item    How long does it take for the wave to reach the populated area?
+    \item    What is the height of the wave when it reaches the shore?
+\end{enumerate}
+
+Modeling tools in order to describe the problem, derive the modeling equa-
+tions and finally simplify them by only retaining the processes that matter
+for a given application (questions of type mod ).
+(2) Analytical tools in order to solve simple equations and, in that way, gain
+more insight into the governing equations (questions of type ana).
+(3) Numerical tools in order to set up and implement numerical methods which
+will enable you to treat more realistic cases (questions of type num).
