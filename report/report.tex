@@ -13,22 +13,12 @@
 \maketitle
 \clearpage
 
-% Chapter 1
+%
+%    INTRODUCTION
+%
+\section{Introduction}
 
-\chapter{Introduction} % Main chapter title
-
-\label{Chapter1} % For referencing the chapter elsewhere, use \ref{Chapter1} 
-
-%----------------------------------------------------------------------------------------
-
-% Define some commands to keep the formatting separated from the content 
-\newcommand{\keyword}[1]{\textbf{#1}}
-\newcommand{\tabhead}[1]{\textbf{#1}}
-\newcommand{\code}[1]{\texttt{#1}}
-\newcommand{\file}[1]{\texttt{\bfseries#1}}
-\newcommand{\option}[1]{\texttt{\itshape#1}}
-
-%----------------------------------------------------------------------------------------
+Set problem in context.
 
 In this modelling project, we will address three major phases in the development of a tsunami:
 \begin{enumerate}[label = \emph{(\roman*)}]
@@ -46,82 +36,52 @@ In the case of a tsunami event close to a populated area, two questions are of p
     \item    What is the height of the wave when it reaches the shore?
 \end{enumerate}
 
-Modeling tools in order to describe the problem, derive the modeling equa-
-tions and finally simplify them by only retaining the processes that matter
-for a given application (questions of type mod ).
-(2) Analytical tools in order to solve simple equations and, in that way, gain
-more insight into the governing equations (questions of type ana).
-(3) Numerical tools in order to set up and implement numerical methods which
-will enable you to treat more realistic cases (questions of type num).
+Add extra..
 
 \section{Theory}
-\subsection{Conservation of Mass}
-Let $\rho(x,t)$ be the density of a fluid. We choose an arbitrary fixed
-control volume
-$\Omega$. Assuming no sources or sinks we get the conservation of mass on integral form
-\begin{equation}
-  \frac{\d }{\d t}\int\limits_{\Omega}\rho (\mathbf v, t) \d
-  V + \int\limits_{\partial\Omega} \rho(\mathbf x,
-  t)\ \bm{x\cdot n} \d S = 0.
-\end{equation}
-Using the divergence theorem we can transform the second integral into
-a volume integral. Further we assume $\rho$ to be sufficiently smooth
-so we can move the derivative inside the integral sign(Note that
-$\Omega$ does not depend on time so $\frac{\d \rho(\mathbf x,t)}{\d
-  t}= \frac{\partial \rho(\mathbf x, t)}{\partial t}$;
-\begin{equation*}
-  \int\limits_{\Omega}\left(\frac{\partial }{\partial t}\rho (\mathbf x, t) +
-    \nabla\cdot(\rho(\mathbf x, t)\ \mathbf v) \right)\d V = 0.
-\end{equation*}
-Since the control volume we chose was arbitrary the integrand has to
-be zero. This gives us the conservation of mass on differential form
-\begin{equation}
-  \frac{\partial }{\partial t}\rho (\mathbf x, t) +
-    \nabla\cdot(\rho(\mathbf x, t)\ \mathbf v)  = 0.
-\end{equation}
-\subsection{Conservation of Momentum}
-We now let the control volume $\Omega=\Omega(t)$ depend on time. 
-By using Newton's second law of motion we can write the conservation
-of momentum as
-\begin{equation}
-  \frac{\d }{d t}\int\limits_{\Omega(t)}\rho \mathbf v \d V =
-  -\int\limits_{\partial \Omega}p\mathbf n \d S +
-  \int\limits_{\Omega(t)}\rho\mathbf g\d V.
-\end{equation}
 
-\section{Conservation of Mass}
+\subsection{Governing Equations}
+
+\subsubsection*{Conservation of Mass}
 
 We consider a fluid occupying a domain $\Omega \subset \mathbb{R}^3$. Let $\rho = \rho(\bm{x}, t)$, and
 $\bm{v} = \bm{v}(\bm{x},t)$ denote the density and velocity of the fluid, respectively, at a position
-$\bm{x} = (x,y,z) \in \Omega$ at a time $t > 0$. We look at a control volume $R$, with surface $\partial R$.
-The rate of change of total mass in $R$ is then
+$\bm{x} = (x,y,z) \in \Omega$ at a time $t > 0$. We look at a control volume $\mathcal{C}$, with surface $\partial \mathcal{C}$.
+The rate of change of total mass in $\mathcal{C}$ is then
 \begin{align}
-    \frac{d}{d t}\int_R \rho(\bm{x},t) \, d \bm{x}.
+    \frac{\d}{\d t}\int_\mathcal{C} \rho(\bm{x},t) \, \d V.
 \end{align}
-Consider now a small part of the surface $\partial R$, with area $ds$. Let $\bm{n}$ denote the outward normal
-of $\partial R$. The mass flux through this surface element is then $-\rho \bm{v} \cdot \bm{n} \, ds$, so the
-total mass flux through the boundary of $R$ is then
+Consider now a small part of the surface $\partial \mathcal{C}$, with area $\d S$. Let $\bm{n}$ denote the outward normal
+of $\partial \mathcal{C}$. The mass flux through this surface element is then $-\rho \bm{v} \cdot \bm{n} \, \d S$, so the
+total mass flux through the boundary of $\mathcal{C}$ is then
 \begin{align}
-    -\int_{\partial R}\rho \bm{v} \cdot \bm{n} \, ds.
+    -\int_{\partial \mathcal{C}}\rho \bm{v} \cdot \bm{n} \, \d S.
 \end{align}
-Assuming that there are no sources or sinks within $R$, conservation of mass requires that
+Assuming that there are no sources or sinks within $\mathcal{C}$, conservation of mass requires that
 \begin{align}
-    \frac{d}{d t}\int_R \rho(\bm{x},t) \, d \bm{x}
-                            = -\int_{\partial R}\rho \bm{v} \cdot \bm{n} \, ds.
+    \frac{\d}{\d t}\int_\mathcal{C} \rho(\bm{x},t) \, \d V
+                            = -\int_{\partial \mathcal{C}}\rho \bm{v} \cdot \bm{n} \, \d S.
 \end{align}
-Using the divergence theorem, and assuming that $\rho$ is smooth, so that the derivative can be moved inside
-the integral, we obtain
+
+Using the divergence theorem we can transform the second integral into
+a volume integral. Further we assume $\rho$ to be sufficiently smooth
+so we can move the derivative inside the integral sign (Note that
+$\mathcal{C}$ does not depend on time, so that $\frac{\d \rho(\bm x,t)}{\d
+  t}= \rho_t(\bm x, t)$);
 \begin{align}
-    \int_R \big(\rho_t(\bm{x},t) + \nabla \cdot (\rho \bm{v}) \big) \, d \bm{x} = 0.
+    \int_\mathcal{C} \big(\rho_t(\bm{x},t) + \nabla \cdot (\rho \bm{v}) \big) \, \d V = 0.
 \end{align}
-Now, this is true for any control volume $R \subset \Omega$. This gives that the integrand is zero. Indeed;
+Now, this is true for any control volume $\mathcal{C} \subset \Omega$. This gives that the integrand is zero. Indeed;
 if we assume that the integrand is zero at some point in $\Omega$, continuity of $\rho$ and $\bm{v}$
 gives that the integral would be positive, which is a contradiction. Hence, we have
 \begin{align}
     \rho_t(\bm{x},t) + \nabla \cdot (\rho \bm{v}) = 0.
 \end{align}
 
-\section{Conservation of Momentum}
+%
+%    Conservation of Momentum
+%
+\subsubsection*{Conservation of Momentum}
 
 We have
 \begin{align}
@@ -152,6 +112,8 @@ Div on each component
 	                + \bm{v} \nabla \cdot (\rho \bm{v}) + \nabla p - \rho \bm{g} = 0
 \end{align}
 
+\subsubsection*{something}
+
 Since $\phi$ is a scalar function, we have
 \begin{align}
     \nabla \times (\nabla \phi) = \nabla \times (\phi_x, \phi_y, \phi_z) =
@@ -161,6 +123,7 @@ From the properties of the mixed partial derivative, we have $\phi_{x_i x_j} = \
 \begin{align}
     \nabla \times (\nabla \phi) = 0 \quad \forall \text{ scalar functions } \phi.
 \end{align}
+
 
 \section{Boundary Conditions}
 
