@@ -7,11 +7,47 @@
 	Industrial Mathematics\\
 	NTNU \\\\
 }
-\title{Cool Title Goes Here \\                                                               
+\title{Cool Title Goes Here \\     
 	TMA4195}
 \begin{document}
-	\maketitle
-test
+\maketitle
+\clearpage
+
+\section{Theory}
+\subsection{Conservation of Mass}
+Let $\rho(x,t)$ be the density of a fluid. We choose an arbitrary fixed
+control volume
+$\Omega$. Assuming no sources or sinks we get the conservation of mass on integral form
+\begin{equation}
+  \frac{\d }{\d t}\int\limits_{\Omega}\rho (\mathbf v, t) \d
+  V + \int\limits_{\partial\Omega} \rho(\mathbf x,
+  t)\ \mathbf{x\cdot n} \d S = 0.
+\end{equation}
+Using the divergence theorem we can transform the second integral into
+a volume integral. Further we assume $\rho$ to be sufficiently smooth
+so we can move the derivative inside the integral sign(Note that
+$\Omega$ does not depend on time so $\frac{\d \rho(\mathbf x,t)}{\d
+  t}= \frac{\partial \rho(\mathbf x, t)}{\partial t}$;
+\begin{equation*}
+  \int\limits_{\Omega}\left(\frac{\partial }{\partial t}\rho (\mathbf x, t) +
+    \nabla\cdot(\rho(\mathbf x, t)\ \mathbf v) \right)\d V = 0.
+\end{equation*}
+Since the control volume we chose was arbitrary the integrand has to
+be zero. This gives us the conservation of mass on differential form
+\begin{equation}
+  \frac{\partial }{\partial t}\rho (\mathbf x, t) +
+    \nabla\cdot(\rho(\mathbf x, t)\ \mathbf v)  = 0.
+\end{equation}
+\subsection{Conservation of Momentum}
+We now let the control volume $\Omega=\Omega(t)$ depend on time. 
+By using Newton's second law of motion we can write the conservation
+of momentum as
+\begin{equation}
+  \frac{\d }{d t}\int\limits_{\Omega(t)}\rho \mathbf v \d V =
+  -\int\limits_{\partial \Omega}p\mathbf n \d S +
+  \int\limits_{\Omega(t)}\rho\mathbf g\d V.
+\end{equation}
+
 
 
 \end{document}
