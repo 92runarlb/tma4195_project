@@ -45,11 +45,11 @@ neuman_half_faces = neuman_half_faces(is_neuman_half_faces);
 nnhf = nnz(is_neuman_half_faces);
 
 neuman_rhs = zeros(nnhf,1);
-neuman_rhs(G.faces.centroids(G.cells.faces(neuman_half_faces), 2) == 1) = 1;
+neuman_rhs(G.faces.centroids(G.cells.faces(neuman_half_faces), 2) == 1) = 0;
 neuman_rhs(G.faces.centroids(G.cells.faces(neuman_half_faces), 2) == 0) = 0;
 
 % Deform the grid at top and bottom using the functions h and eta.
-h = @(x) (1*ones(numel(x), 1) - 0.02*cos(6*pi*x));
+h = @(x) 1;
 epsilon = 5e-1;
 eta = @(x) (1/(sqrt(pi)*epsilon)*exp(-(x-0.5).^2/(epsilon^2)));
 x = G.nodes.coords;
