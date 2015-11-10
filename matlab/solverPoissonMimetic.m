@@ -72,7 +72,7 @@ function [phiSurf, gradPhiSurf] = solverPoissonMimetic(G, h, eta, etat);
     faceLengths = G.faces.areas(G.cells.faces(neuman_half_faces(is_topHalfFaces),1));
     
     neuman_rhs = zeros(nnhf,1);
-    neuman_rhs(is_topHalfFaces) = etat./nvec;
+    neuman_rhs(is_topHalfFaces) = etat.*faceLengths./nvec;
     neuman_rhs(is_bottomHalfFaces) = 0;
 
     % We compute the mimetic scalar product
@@ -121,7 +121,8 @@ function [phiSurf, gradPhiSurf] = solverPoissonMimetic(G, h, eta, etat);
     phi = sol([true(nc, 1); false(nif,1); false(nnhf, 1)]);
     pii = sol([false(nc, 1); true(nif,1); false(nnhf, 1)]);
     p_neum = sol([false(nc, 1); false(nif,1); true(nnhf, 1)]);
-    gradPhiHalfFace = BI*((C*phi)+(D*pii)+N*p_neum); % Should be - but 
+    gradPhiHalfFace = -BI*((C*phi)+(D*pii)+N*p_neum);
+    % Should be - but 
                                                      % for some reason the
                                                      % sign is wrong
     
