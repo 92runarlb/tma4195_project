@@ -1,4 +1,4 @@
-function [phi, gradPhiSqr, top_cells,G] = poissonMimetic(G, h, eta, etat);
+function [phi, gradPhiSqr, top_cells,G] = poissonMimeticDirich(G, h, phi_top, eta);
     nc = G.cells.num;
     nf = G.faces.num;
     half_faces = G.cells.faces(:, 1);
@@ -10,25 +10,24 @@ function [phi, gradPhiSqr, top_cells,G] = poissonMimetic(G, h, eta, etat);
     right_phi = 0*0.5*(G.faces.centroids(right_faces,2).^2-1);
     
     left_faces = (1 : G.faces.num)';    
-    left_faces = left_faces(G.faces.centroids(:, 1) == 0);
-    
+    left_faces = left_faces(G.faces.centroids(:, 1) == 0);    
     left_phi = 0*0.5*(G.faces.centroids(right_faces,2).^2);
-    
-    dirich_faces = [right_faces;left_faces];
-    dirich_phi = [right_phi;left_phi];
-
-    % Identify bottom and top faces, to apply the Neuman boundary conditions.
+   
     top_faces = (1 : G.faces.num)';
     top_faces = top_faces(G.faces.centroids(:, 2) == 1);
-    top_neu = etat;
-
+    
+    dirich_faces = [right_faces;left_faces;top_faces];
+    dirich_phi = [right_phi;left_phi; phi_top];
+    
+    
+    % Identify bottom and top faces, to apply the Neuman boundary conditions.
     bottom_faces = (1 : G.faces.num)';
     bottom_faces = bottom_faces(G.faces.centroids(:, 2) == 0);
     bottom_neu = zeros(numel(bottom_faces), 1);
 
-    neumann_faces = [top_faces; bottom_faces];
+    neumann_faces = bottom_faces;
     neumann_Gphi = zeros(nf,1);
-    neumann_Gphi(neumann_faces) = [top_neu; bottom_neu];
+    neumann_Gphi(neumann_faces) = bottom_neu;
     
     
     % Set the change in dx
@@ -80,7 +79,7 @@ function [phi, gradPhiSqr, top_cells,G] = poissonMimetic(G, h, eta, etat);
     deta = sqrt((dl./dx).^2 -1);
     nvecScale = sqrt(sum([deta,ones(size(deta,1),1)].^2,2));
     neumann_Gphi(neumann_faces) = neumann_Gphi(neumann_faces).*dl./nvecScale;
-    nvecScale
+    
         
     neumann_rhs = neumann_Gphi(half_faces(neuman_half_faces));
 
@@ -126,7 +125,7 @@ function [phi, gradPhiSqr, top_cells,G] = poissonMimetic(G, h, eta, etat);
    
     %is_top_cell_half_faces = zeros(nhf,1);
 
-    gradPhiSqr = zeros(size(etat));
+    gradPhiSqr = zeros(size(phi_top,1),2);
     for i = 1:numel(top_cells)
         c = top_cells(i);
         facePos = G.cells.facePos(c):G.cells.facePos(c+1)-1;
@@ -147,7 +146,7 @@ function [phi, gradPhiSqr, top_cells,G] = poissonMimetic(G, h, eta, etat);
         minn2 = 1;
         for n = 1:size(normals,1)
             n2temp = normals(n,:)/norm(normals(n,:),2);
-            if minn2>dot(n1, n2temp) && is_int_faces(faces(n));
+            if minn2>dot(n1, n2temp);
                 n2 = n2temp;
                 minn2 = dot(n1,n2temp);
                 n2index = n;
@@ -163,7 +162,7 @@ function [phi, gradPhiSqr, top_cells,G] = poissonMimetic(G, h, eta, etat);
         
         %gradPhifk1 = gradPhifk(find(find(is_int_faces)==faces1));
         %gradPhifk2 = gradPhifk(find(find(is_int_faces)==faces2));
-        gradPhiSqr(i) = gradPhifk1^2 + (1-dot(n1,n2)^2)*gradPhifk2^2;
+        gradPhiSqr(i,:) = (gradPhifk1)*n1 + (n2-dot(n1,n2)*n1)*(gradPhifk2);
  
         
 %         c = topCells(i);
