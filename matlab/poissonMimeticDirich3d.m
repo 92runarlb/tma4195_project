@@ -1,4 +1,4 @@
-function [phi, gradPhiSqr, top_cells,top_faces, G] = poissonMimeticDirich3d(G, h, phi_top, eta, boundaryCond);
+function [phi, gradPhiSqr, top_cells,top_faces, G] = poissonMimeticDirich3d(G, h, phi_top, eta,gridLimits, boundaryCond);
     nc = G.cells.num;
     nf = G.faces.num;
     half_faces = G.cells.faces(:, 1);
@@ -14,7 +14,7 @@ function [phi, gradPhiSqr, top_cells,top_faces, G] = poissonMimeticDirich3d(G, h
         west_phi = 0*0.5*(G.faces.centroids(west_faces,2).^2-1);
 
         east_faces = (1 : G.faces.num)';    
-        east_faces = east_faces(G.faces.centroids(:, 1) == 1);    
+        east_faces = east_faces(G.faces.centroids(:, 1) == gridLimits(1));    
         east_phi = 0*0.5*(G.faces.centroids(east_faces,2).^2);
 
         south_faces = (1 : G.faces.num)';    
@@ -22,11 +22,11 @@ function [phi, gradPhiSqr, top_cells,top_faces, G] = poissonMimeticDirich3d(G, h
         south_phi = 0*0.5*(G.faces.centroids(south_faces,2).^2);
 
         north_faces = (1 : G.faces.num)';    
-        north_faces = north_faces(G.faces.centroids(:, 2) == 1);    
+        north_faces = north_faces(G.faces.centroids(:, 2) == gridLimits(2));    
         north_phi= 0*0.5*(G.faces.centroids(north_faces,2).^2);
  
         top_faces = (1 : G.faces.num)';
-        top_faces = top_faces(G.faces.centroids(:, 3) == 1);
+        top_faces = top_faces(G.faces.centroids(:, 3) == gridLimits(3));
 
         dirich_faces = [west_faces;east_faces; south_faces; north_faces; top_faces];
         dirich_phi = [west_phi; east_phi; south_phi; north_phi; phi_top];
@@ -46,7 +46,7 @@ function [phi, gradPhiSqr, top_cells,top_faces, G] = poissonMimeticDirich3d(G, h
 
     %% Neumann left rigt5h bottom, Dirich top
         top_faces = (1 : G.faces.num)';
-        top_faces = top_faces(G.faces.centroids(:, 3) == 1);
+        top_faces = top_faces(G.faces.centroids(:, 3) == gridLimits(3));
 
         dirich_faces = [top_faces];
         dirich_phi = [phi_top];
@@ -58,7 +58,7 @@ function [phi, gradPhiSqr, top_cells,top_faces, G] = poissonMimeticDirich3d(G, h
         west_neu = 0*0.5*(G.faces.centroids(west_faces,2).^2-1);
 
         east_faces = (1 : G.faces.num)';    
-        east_faces = east_faces(G.faces.centroids(:, 1) == 1);    
+        east_faces = east_faces(G.faces.centroids(:, 1) == gridLimits(1));    
         east_neu = 0*0.5*(G.faces.centroids(east_faces,2).^2);
 
         south_faces = (1 : G.faces.num)';    
@@ -66,7 +66,7 @@ function [phi, gradPhiSqr, top_cells,top_faces, G] = poissonMimeticDirich3d(G, h
         south_neu = 0*0.5*(G.faces.centroids(south_faces,2).^2);
 
         north_faces = (1 : G.faces.num)';    
-        north_faces = north_faces(G.faces.centroids(:, 2) == 1);    
+        north_faces = north_faces(G.faces.centroids(:, 2) == gridLimits(2));    
         north_neu = 0*0.5*(G.faces.centroids(north_faces,2).^2);
  
         bottom_faces = (1 : G.faces.num)';
@@ -120,7 +120,7 @@ function [phi, gradPhiSqr, top_cells,top_faces, G] = poissonMimeticDirich3d(G, h
     x2 = x(:,2);
     xx(:, 1) = x1;
     xx(:,2) = x2;
-    xx(:, 3) = (-h(x1,x2) + (eta + h(x1,x2)).*x(:, 3));
+    xx(:, 3) = (h(x1,x2) - (eta + h(x1,x2)).*x(:, 3));
     G.nodes.coords = xx;
     G = computeGeometry(G);
 
@@ -234,7 +234,7 @@ function [phi, gradPhiSqr, top_cells,top_faces, G] = poissonMimeticDirich3d(G, h
         % Find direction
         n1 = n1*(-1+2*(G.faces.neighbors(face1)==c));
         n2 = n2*(-1+2*(G.faces.neighbors(face2)==c));
-        n3 = n3*(-1+2*(G.faces.neighbors(face2)==c));
+        n3 = n3*(-1+2*(G.faces.neighbors(face3)==c));
         
         n2orth = n2-dot(n1,n2)*n1;
         n3orth = n3 - dot(n1,n3)*n1 - dot(n2,n3)*n2;
@@ -261,9 +261,10 @@ function [phi, gradPhiSqr, top_cells,top_faces, G] = poissonMimeticDirich3d(G, h
     %gradPhiSqr = gradPhiN(is_top_cell_half_faces);
     
     
-    %plotGrid(G, c,'facecolor','r')
+    %plotGrid(G,'facecolor','none')
+   % figure()
     %plotCellData(G, phi);
     %colorbar;
-
+    
     
 end
