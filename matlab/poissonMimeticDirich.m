@@ -1,4 +1,4 @@
-function [phi, gradPhiSqr, top_cells,top_faces, G] = poissonMimeticDirich(G, h, phi_top, eta, boundaryCond);
+function [phi, gradPhiSqr, top_cells,top_faces, G] = poissonMimeticDirich(G, h, phi_top, eta, gridLimits, boundaryCond);
     nc = G.cells.num;
     nf = G.faces.num;
     half_faces = G.cells.faces(:, 1);
@@ -10,7 +10,7 @@ function [phi, gradPhiSqr, top_cells,top_faces, G] = poissonMimeticDirich(G, h, 
         %% Neuman bottom, Dirich left and right top
         % Find dirichlet faces. They are on the left and right boundary
         right_faces = (1 : G.faces.num)';
-        right_faces = right_faces(G.faces.centroids(:, 1) == 1);
+        right_faces = right_faces(G.faces.centroids(:, 1) == gridLimits(1));
         right_phi = 0*0.5*(G.faces.centroids(right_faces,2).^2-1);
 
         left_faces = (1 : G.faces.num)';    
@@ -18,7 +18,7 @@ function [phi, gradPhiSqr, top_cells,top_faces, G] = poissonMimeticDirich(G, h, 
         left_phi = 0*0.5*(G.faces.centroids(right_faces,2).^2);
 
         top_faces = (1 : G.faces.num)';
-        top_faces = top_faces(G.faces.centroids(:, 2) == 1);
+        top_faces = top_faces(G.faces.centroids(:, 2) == gridLimits(2));
 
         dirich_faces = [right_faces;left_faces;top_faces];
         dirich_phi = [right_phi;left_phi; phi_top];
@@ -41,18 +41,17 @@ function [phi, gradPhiSqr, top_cells,top_faces, G] = poissonMimeticDirich(G, h, 
 
     %% Neumann left rigt5h bottom, Dirich top
     top_faces = (1 : G.faces.num)';
-    top_faces = top_faces(G.faces.centroids(:, 2) == 1);
+    top_faces = top_faces(G.faces.centroids(:, 2) == gridLimits(2));
     
-    dirich_faces = [top_faces];
+    dirich_faces = top_faces;
     dirich_phi = phi_top;
     
     bottom_faces = (1 : G.faces.num)';
     bottom_faces = bottom_faces(G.faces.centroids(:, 2) == 0);
     bottom_neu = zeros(numel(bottom_faces), 1);
 
-
     right_faces = (1 : G.faces.num)';
-    right_faces = right_faces(G.faces.centroids(:, 1) == 1);
+    right_faces = right_faces(G.faces.centroids(:, 1) == gridLimits(1));
     right_neu = 0*0.5*(G.faces.centroids(right_faces,2).^2-1);
     
     left_faces = (1 : G.faces.num)';    
@@ -61,7 +60,7 @@ function [phi, gradPhiSqr, top_cells,top_faces, G] = poissonMimeticDirich(G, h, 
    
     neumann_faces = [left_faces; right_faces; bottom_faces];
     neumann_Gphi = zeros(nf,1);
-    neumann_Gphi(neumann_faces) = [left_neu;right_neu; bottom_neu];
+    neumann_Gphi(neumann_faces) = [left_neu; right_neu; bottom_neu];
     end
     
 
@@ -101,12 +100,14 @@ function [phi, gradPhiSqr, top_cells,top_faces, G] = poissonMimeticDirich(G, h, 
 
 
     % Deform the grid.
+    
     x = G.nodes.coords;
     xx = zeros(size(x));
     x1 = x(:, 1);
     xx(:, 1) = x1;
     xx(:, 2) = -h(x1) + (eta + h(x1)).*x(:, 2);
     G.nodes.coords = xx;
+    
     G = computeGeometry(G);
     
     % Finde face areas in deformed grid
@@ -169,8 +170,6 @@ function [phi, gradPhiSqr, top_cells,top_faces, G] = poissonMimeticDirich(G, h, 
         faces = G.cells.faces(facePos,:);
         normals = G.faces.normals(faces(:,1),:);
         n1index = find(faces(:,2)==4);
-        n1 = normals(n1index,:);
-        n1 = n1/norm(n1,2);
         
 %         for m = 1:size(normals,1)
 %             n1temp = normals(m,:)/norm(normals(m,:),2);
@@ -180,32 +179,46 @@ function [phi, gradPhiSqr, top_cells,top_faces, G] = poissonMimeticDirich(G, h, 
 %                 break
 %             end            
 %         end
-        minn2 = 1;
-        for n = 1:size(normals,1)
-            n2temp = normals(n,:)/norm(normals(n,:),2);
-            if minn2>dot(n1, n2temp);
-                n2 = n2temp;
-                minn2 = dot(n1,n2temp);
-                n2index = n;
-            end
-        end
+%         minn2 = 1;
+%         for n = 1:size(normals,1)
+%             n2temp = normals(n,:)/norm(normals(n,:),2);
+%             if minn2>dot(n1, n2temp);
+%                 n2 = n2temp;
+%                 minn2 = dot(n1,n2temp);
+%                 n2index = n;
+%             end
+%         end
+        n2index = find(faces(:,2)==1);
+        n3index = find(faces(:,2)==2);
+        
+        n1 = normals(n1index,:);
+        n1 = n1/norm(n1,2);
+        n2 = normals(n2index,:);
+        n2 = n2/norm(n2,2);
+        n3 = normals(n3index,:);
+        n3 = n3/norm(n3,2);
+
         face1 = faces(n1index);
         face2 = faces(n2index);
-        
-        
+        face3 = faces(n3index);
         
         gradPhifk1 = gradPhiN(and(half_faces==face1, half_face_to_cell== c));
         gradPhifk2 = gradPhiN(and(half_faces==face2, half_face_to_cell== c));
+        gradPhifk3 = gradPhiN(and(half_faces==face3, half_face_to_cell== c));
         
         gradPhifk1 = gradPhifk1/face_areas(face1);
         gradPhifk2 = gradPhifk2/face_areas(face2);
+        gradPhifk3 = gradPhifk3/face_areas(face3);
+        
+        gradPhifkAvg = 0.5*(gradPhifk3 - gradPhifk2);
         
         n1 = n1*(-1+2*(G.faces.neighbors(face1)==c));
         n2 = n2*(-1+2*(G.faces.neighbors(face2)==c));
-        n2orth = n2-dot(n1,n2)*n1;
-        gradPhiSqr(i,:) = (gradPhifk1)*n1 + n2orth*(gradPhifk2*dot(n2,n2orth));
+        n3 = n3*(-1+2*(G.faces.neighbors(face3)==c));
+        assert(-dot(n2,n3) > 1 - 1e-10)
+        nOrth = n3-dot(n1,n3)*n1;
+        gradPhiSqr(i,:) = (gradPhifk1)*n1 + nOrth*(gradPhifkAvg*dot(n3,nOrth));
  
-        
 %         c = topCells(i);
 %         %is_top_faces = false(nf,1);
 %         faces = G.cells.faces(G.cells.facePos(c):G.cells.facePos(c+1)-1);

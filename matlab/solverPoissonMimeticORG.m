@@ -1,4 +1,4 @@
-mrstModule add mimetic;
+% mrstModule add mimetic;
 require mimetic;
 
 % Set up a Cartesian grid.
@@ -37,6 +37,8 @@ x1 = x(:, 1);
 xx(:, 1) = x1;
 xx(:, 2) = -h(x1) + (eta(x1) + h(x1)).*x(:, 2);
 G.nodes.coords = xx;
+
+G = computeGeometry(G);
 
 % We compute the mimetic scalar product
 rock.perm = ones(G.cells.num, 1); % this is because MRST is a code for geosciences...
