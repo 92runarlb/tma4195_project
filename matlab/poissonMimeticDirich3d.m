@@ -44,7 +44,7 @@ function [phi, gradPhiSqr, top_cells,top_faces, G] = poissonMimeticDirich3d(G, h
     %     % Identify bottom and top faces, to apply the Neuman boundary conditions.
 %         % Find dirichlet faces. They are on the left and right boundary
 
-    %% Neumann left rigt5h bottom, Dirich top
+    %% Neumann left right bottom, Dirich top
         top_faces = (1 : G.faces.num)';
         top_faces = top_faces(G.faces.centroids(:, 3) == gridLimits(3));
 

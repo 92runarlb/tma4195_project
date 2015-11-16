@@ -5,16 +5,16 @@ g = 9.81;
 
 % Set up a Cartesian grid.
 xmax = 1;
-ymax = 3;
-zmax = 1;
-nx = 40;
-ny = 120;
+ymax = 1;
+zmax = 0.5;
+nx = 100;
+ny = 100;
 nz = 20;
 dx = 1/nx;
 G = cartGrid([nx, ny, nz], [xmax, ymax, zmax]);
 G = computeGeometry(G);
 
-T = 2;
+T = 4;
 k = 0.05;
 
 % Define initial values
@@ -24,7 +24,7 @@ eta_0 = @(x,y) -0.2*zeros(size(x,1),1);
 phi_top_0 = @(x,y) 0.05*exp(-((x-0.5).^2 +(y-0.5).^2)/epsilon); %zeros(size(x,1),1);
 
 top_faces = (1 : G.faces.num)';
-top_centroids = G.faces.centroids(G.faces.centroids(:, 3) == 1,:);
+top_centroids = G.faces.centroids(G.faces.centroids(:, 3) == zmax,:);
 
 
 eta_old = eta_0(G.nodes.coords(:,1),G.nodes.coords(:,2));
@@ -43,8 +43,8 @@ for t=0:k:T
     % Calculate phi^n+1
     [phi, gradPhi_top, top_cells, top_faces, Gnew] = poissonMimeticDirich3d(G,h,phi_top, eta,[xmax,ymax,zmax], 0);
     
-    node_coords = Gnew.nodes.coords(G.nodes.coords(:,3)==1, 1:2);
-    centroids = Gnew.faces.centroids(G.faces.centroids(:,3)==1, 1:2);
+    node_coords = Gnew.nodes.coords(G.nodes.coords(:,3)==zmax, 1:2);
+    centroids = Gnew.faces.centroids(G.faces.centroids(:,3)==zmax, 1:2);
 
         %Could use,  eta = node_coords(:,3);
     eta = eta(1:(nx+1)*(ny+1));
@@ -150,7 +150,9 @@ end
 
 close all
 
-myVid = VideoWriter('WAWY.avi')
+name = 'WAWY';
+name = strcat(name,num2str(nx),'_',num2str(ny),'_',num2str(nz),'_',num2str(T),'_',num2str(k),'.avi')
+myVid = VideoWriter(name)
 myVid.FrameRate = 8;
 open(myVid);
 writeVideo(myVid, F);
