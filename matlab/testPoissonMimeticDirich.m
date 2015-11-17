@@ -5,7 +5,7 @@ g = 9.81;
 
 % Set up a Cartesian grid.
 nx = 120;
-ny = 5;
+ny = 50;
 xMax = 1.7;
 yMax = 1;
 gridLimits = [xMax, yMax];
@@ -18,7 +18,7 @@ k = 0.01;
 
 % Define initial values
 
-hStart = 0.3; hEnd = 0.015; x1 = 0.75; x2 = 1.3;
+hStart = 0.3; hEnd = 0.3; x1 = 0.75; x2 = 1.3;
 
 xCenter = 1.3;
 
