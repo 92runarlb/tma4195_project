@@ -47,7 +47,7 @@ f = figure('units','normalized','outerposition',[0 0 1 1]);
 
 for t=0:k:T
     % Calculate phi^n+1
-    [phi, gradPhi_top, top_cells, top_faces, Gnew] = poissonMimeticDirich(G,h,phi_top, eta, gridLimits, 0);
+    [phi, gradPhi_top, Gnew] = poissonMimetic2D(G,h,phi_top, eta, gridLimits, 0);
     % Remove extra etas
     
     eta = eta(1:nx+1);  
