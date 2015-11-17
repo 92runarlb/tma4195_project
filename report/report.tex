@@ -185,4 +185,57 @@ The boundary conditions yields $\nabla \phi \cdot \bm{n}|_{z = -h(x,y)} = 0$
 
 We 
 
+\section{Numerical simulation of Navier Stokes}
+
+\begin{align*}
+    \frac{\eta_i^{n+1} - \eta_i^n}{k} + (\phi_x)_i^{n} \frac{\eta_{i+1}^{n+1}-\eta_{i-1}^{n}}{2h} - (\phi_z)_i^n = 0
+\end{align*}
+
+which yields the matrix system
+
+\begin{align}
+    \label{eq:etan+1}
+    \bm{A} \bm{\eta}^{n+1} = \frac{1}{k}\bm{\eta}^n + \bm{\phi}_z^n,
+\end{align}
+where $\bm{A}$ is a tridiagonal matrix with the following diagonals:
+\begin{align*}
+    \text{Super diagonal: } &\frac{1}{2h} \Big((\phi_x)_2^{n}, (\phi_x)_3^{n} \dots, 2(\phi_M)^{n}\Big) \\
+    \text{Main diagonal: }  &\frac{1}{k}  \Big(1, \dots, 1\Big)                                        \\
+    \text{Sub diagonal: }  -&\frac{1}{2h} \Big(2(\phi_x)_1^{n}, (\phi_x)_2^{n}, (\phi_x)_3^{n}, \dots, (\phi_x)_{M-1}^n \Big).
+\end{align*}
+Further, $\bm{\eta}^{n} = \Big(\eta_1^n, \dots, \eta_M^n\Big)^\top$, and $\bm{\phi}_z^n = \Big((\phi_z)_1^n, \dots, (\phi_z)_M^n\Big)^\top$.
+
+\begin{align*}
+    \frac{\phi_i^{n+1}-\phi_i^n}{k} + \frac{1}{2}|\nabla \phi_i^n|^2 + g \eta_i^{n+1} = 0,
+\end{align*}
+which can be written in matrix form as
+\begin{align}
+    \label{eq:phin+1}
+    \bm{\phi}^{n+1} = \bm{\phi}^n - k\bigg(\frac{1}{2}\bm{\xi}^n + g \bm{\eta}^{n+1}\bigg),
+\end{align}
+where $\bm{\xi}^n = \Big(|\nabla \phi_1^n|^2, \dots,  |\nabla \phi_M^n|^2\bigg)$
+
+\begin{algorithm}
+    \caption{Das Algo}
+	\begin{algorithmic}[1]
+	\State    Input: $\bm{\eta}^0$, $\bm{\phi}^0$, $h$, $x_{\min}$, $x_{\max}$.
+	    \For    {$n \leftarrow 0,N^T$}
+	        \State    $\Omega^n \leftarrow \{(x,z) \in \mathbb{R}^2 : x_{\min} \leq x \leq x_{\max}, -h(x) \leq z \leq \eta(x)\}$ 
+			\State    Calculate $\phi^{n}$, $\bm{\phi}_x^n$ and $\bm{\phi}_z^n$ using mimetic finite differences
+			\State    Calculate $\bm{\eta}^{n+1}$ from \eqref{eq:etan+1}
+			\State    Calculate $\bm{\phi}^{n+1}$ from \eqref{eq:phin+1}
+        \EndFor
+	\end{algorithmic}
+\end{algorithm}
+
+The first step in algorithm ref requires some consideration. MFD gives us the fluxes on each half-face, $v_{f} \approx \int_{f} \nabla \phi \cdot n_{f} \, \d s$.
+Moreover, we know that any vector $\bm{v} \in \mathbb{R}^2$ can be written as $(\bm{v}\cdot\bm{n}_1) \bm{n}_1 + (\bm{v}\cdot\bm{n}_2) \bm{n}_2$,
+where $\bm{n}_1$ and $\bm{n}_2$ are two orthogonal vectors of unit length.
+Hence, in order to approximate $\nabla \phi$ on a top half-face $f_t$, we choose the corresponding right and left half-faces $f_r$ and $f_l$ sharing the same cell.
+Since we are not altering the grid in the $x$-direction, we can then approximate $\nabla \phi|_{f_t}$ as
+\begin{align*}
+    \nabla \phi|_{f_t} \approx |f_t|^{-1} v_{f_t} \bm{n}_{f_t} + \frac{1}{2}(|f_l|^{-1}v_{f_l}-|f_r|^{-1}v_{f_r})\bm{n}_{f_r}.
+\end{align*}
+We then choose $\nabla \phi|_{f_t}$ to be our approximation of $\nabla \phi$ at the centroid of $f_t$.
+
 \end{document}

@@ -216,13 +216,38 @@ function [phi, gradPhi_top, G] = poissonMimetic2D(G, h, phi_top, eta, gridLimits
         
         gradPhifkAvg = 0.5*(gradPhifk3 - gradPhifk2);
         
-        n1 = n1*(-1+2*(G.faces.neighbors(face1)==c));
-        n2 = n2*(-1+2*(G.faces.neighbors(face2)==c));
-        n3 = n3*(-1+2*(G.faces.neighbors(face3)==c));
+        n1 = n1*(-1+2*(G.faces.neighbors(face1,1)==c));
+        n2 = n2*(-1+2*(G.faces.neighbors(face2,1)==c));
+        n3 = n3*(-1+2*(G.faces.neighbors(face3,1)==c));
         assert(-dot(n2,n3) > 1 - 1e-10)
         nOrth = n3-dot(n1,n3)*n1;
         gradPhi_top(i,:) = (gradPhifk1)*n1 + nOrth*(gradPhifkAvg*dot(n3,nOrth));
- 
+%         
+            % Finde face areas in deformed grid
+        
+%         c = top_cells(i);
+%         facePos = G.cells.facePos(c):G.cells.facePos(c+1)-1;
+%         faces = G.cells.faces(facePos,1);
+%         normals = G.faces.normals(faces,:);
+%         
+%         nFaces = numel(faces);
+%         gradPhifk = zeros(nFaces,1);
+%         for f = 1:nFaces;
+%             gradPhifk(f) = gradPhiN(and(half_faces==faces(f), half_face_to_cell== c));
+%         end
+%         
+%         gradPhifk = gradPhifk./face_areas(faces);
+%         normals = normals./repmat(sqrt(sum(normals.^2,2)),1,2);
+%         normals = normals.*(repmat(-1+2*(G.faces.neighbors(faces,1) == c),1,2));
+%         n = normals(1,:);
+%         nOrth = [n(2),-n(1)];
+%         orthComp = [0,0];
+%         for f = 2:nFaces
+%             orthComp = orthComp + gradPhifk(f)*dot(nOrth,normals(f,:))*nOrth;
+%         end
+%         orthComp = orthComp./(nFaces-1);
+%         gradPhi_top(i,:) = n*gradPhifk(1) + orthComp;
+%         %gradPhi_top = gradPhi_top./2;
     end
 
 end

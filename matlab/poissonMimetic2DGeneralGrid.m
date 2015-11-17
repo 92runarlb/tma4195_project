@@ -1,4 +1,4 @@
-function [phi, gradPhi_top, G] = poissonMimetic2DGeneralGrid(G, h, phi_top, eta, gridLimits, boundaryCond);
+function [phi, gradPhi_top, top_cells G] = poissonMimetic2DGeneralGrid(G, h, phi_top, gridLimits, top_faces, bottom_faces, right_faces, left_faces);
 %--------------------------------------------------------------------------
 %
 %   Solves the Laplace equation \Delta \phi = 0 on a grid G.
@@ -29,68 +29,26 @@ function [phi, gradPhi_top, G] = poissonMimetic2DGeneralGrid(G, h, phi_top, eta,
     nc = G.cells.num;
     nf = G.faces.num;
     
+    
     %   Half-faces and map from half-faces to cells.
     half_faces = G.cells.faces(:, 1);
     half_face_to_cell = rldecode(1 : G.cells.num, diff(G.cells.facePos), 2)';
     nhf = numel(half_faces);
     
-    
-    %%  Set boundary conditions according to boundaryCond
-    
-    if boundaryCond==1  
-        % Neuman bottom, Dirich left, right and top
-        
-        % Find Dirichlet faces, set BC's
-        right_faces = (1 : G.faces.num)';
-        right_faces = right_faces(G.faces.centroids(:, 1) == gridLimits(1));
-        right_phi = 0*0.5*(G.faces.centroids(right_faces,2).^2-1);
 
-        left_faces = (1 : G.faces.num)';    
-        left_faces = left_faces(G.faces.centroids(:, 1) == 0);    
-        left_phi = 0*0.5*(G.faces.centroids(right_faces,2).^2);
+    % Dirichelt top, Neumann bottom, left and right.
 
-        top_faces = (1 : G.faces.num)';
-        top_faces = top_faces(G.faces.centroids(:, 2) == gridLimits(2));
+    dirich_faces = top_faces;
+    dirich_phi = phi_top;
 
-        dirich_faces = [right_faces;left_faces;top_faces];
-        dirich_phi = [right_phi;left_phi; phi_top];
+    % Find Neumann faces, set BC's
+    bottom_neu = zeros(numel(bottom_faces), 1);
+    right_neu = zeros(numel(right_faces),1);
+    left_neu = zeros(numel(left_faces),1);
 
-        % IFind Neumann faces, set BC's
-        bottom_faces = (1 : G.faces.num)';
-        bottom_faces = bottom_faces(G.faces.centroids(:, 2) == 0);
-        bottom_neu = zeros(numel(bottom_faces), 1);
-
-        neumann_faces = bottom_faces;
-        neumann_Gphi = zeros(nf,1);
-        neumann_Gphi(neumann_faces) = bottom_neu;
-        
-    else    
-        % Dirichelt top, Neumann bottom, left and right.
-        
-        % Find Dirichlet faces, set BC's
-        top_faces = (1 : G.faces.num)';
-        top_faces = top_faces(G.faces.centroids(:, 2) == eta(G.faces.centroids(:,1)));
-
-        dirich_faces = top_faces;
-        dirich_phi = phi_top;
-
-        % Find Neumann faces, set BC's
-        bottom_faces = (1 : G.faces.num)';
-        bottom_faces = bottom_faces(G.faces.centroids(:, 2) == -h(G.faces.centroids(:,1)));
-        bottom_neu = zeros(numel(bottom_faces), 1);
-
-        right_faces = (1 : G.faces.num)';
-        right_faces = right_faces(G.faces.centroids(:, 1) == gridLimits(1));
-        right_neu = zeros(numel(right_faces),1);
-
-        left_faces = (1 : G.faces.num)';    
-        left_faces = left_faces(G.faces.centroids(:, 1) == 0);    
-        left_neu = zeros(numel(left_faces),1);
-
-        neumann_faces = [left_faces; right_faces; bottom_faces];
-        neumann_Gphi = zeros(nf,1);
-        neumann_Gphi(neumann_faces) = [left_neu; right_neu; bottom_neu];
-    end
+    neumann_faces = [left_faces; right_faces; bottom_faces];
+    neumann_Gphi = zeros(nf,1);
+    neumann_Gphi(neumann_faces) = [left_neu; right_neu; bottom_neu];
     
 
 
@@ -176,40 +134,22 @@ function [phi, gradPhi_top, G] = poissonMimetic2DGeneralGrid(G, h, phi_top, eta,
         
         c = top_cells(i);
         facePos = G.cells.facePos(c):G.cells.facePos(c+1)-1;
-        faces = G.cells.faces(facePos,:);
+        faces = G.cells.faces(facePos,1);
         normals = G.faces.normals(faces(:,1),:);
-        n1index = find(faces(:,2)==4);
-        n2index = find(faces(:,2)==1);
-        n3index = find(faces(:,2)==2);
         
-        n1 = normals(n1index,:);
-        n1 = n1/norm(n1,2);
-        n2 = normals(n2index,:);
-        n2 = n2/norm(n2,2);
-        n3 = normals(n3index,:);
-        n3 = n3/norm(n3,2);
-
-        face1 = faces(n1index);
-        face2 = faces(n2index);
-        face3 = faces(n3index);
+        nf = numel(faces);
+        gradPhifk = zeros(nf,1);
+        for f = 1:numel(faces);
+            gradPhifk(f) = gradPhiN(and(half_faces==faces(f), half_face_to_cell== c));
+        end
         
-        gradPhifk1 = gradPhiN(and(half_faces==face1, half_face_to_cell== c));
-        gradPhifk2 = gradPhiN(and(half_faces==face2, half_face_to_cell== c));
-        gradPhifk3 = gradPhiN(and(half_faces==face3, half_face_to_cell== c));
-        
-        gradPhifk1 = gradPhifk1/face_areas(face1);
-        gradPhifk2 = gradPhifk2/face_areas(face2);
-        gradPhifk3 = gradPhifk3/face_areas(face3);
-        
-        gradPhifkAvg = 0.5*(gradPhifk3 - gradPhifk2);
-        
-        n1 = n1*(-1+2*(G.faces.neighbors(face1)==c));
-        n2 = n2*(-1+2*(G.faces.neighbors(face2)==c));
-        n3 = n3*(-1+2*(G.faces.neighbors(face3)==c));
-        assert(-dot(n2,n3) > 1 - 1e-10)
-        nOrth = n3-dot(n1,n3)*n1;
-        gradPhi_top(i,:) = (gradPhifk1)*n1 + nOrth*(gradPhifkAvg*dot(n3,nOrth));
- 
+        gradPhifk = gradPhifk./face_areas(faces);
+        normals = normals./repmat(sqrt(sum(normals.^2,2)),1,2);
+        normals = normals.*(repmat(-1+2*(G.faces.neighbors(faces,1) == c),1,2));
+        n1 = [0,1]; n2 = [1,0];
+        for f = 1:nf
+            gradPhi_top(i,:) = gradPhi_top(i,:) + gradPhifk(f)*dot(normals(f,:),n1)*n1 + gradPhifk(f)*dot(normals(f,:),n2)*n2;
+        end
     end
 
 end

@@ -5,7 +5,7 @@ g = 9.81;
 
 % Set up a Cartesian grid.
 nx = 120;
-ny = 50;
+ny = 10;
 xMax = 1.7;
 yMax = 1;
 gridLimits = [xMax, yMax];
@@ -18,11 +18,13 @@ k = 0.01;
 
 % Define initial values
 
-hStart = 0.3; hEnd = 0.3; x1 = 0.75; x2 = 1.3;
+%hStart = 1; hEnd = 0.2; x1 = 0.75; x2 = 1.3;
+hStart = 0.3; hEnd = 0.02; x1 = 0.9; x2 = 1.3;
+
 
 xCenter = 1.3;
 
-bottomType = 'lin01';
+bottomType = 'shallow';
 
 %h = @(x) -0.25*atan(60*(x-xCenter)/xMax)./pi +0.145;
 
@@ -32,7 +34,7 @@ h = @(x) min(hStart,max((hEnd-hStart)/(x2-x1)*(x-x1) + hStart,hEnd));%ones(size(
 hPlot = @(x) h(x); % 0.1*min(hStart,max((hEnd-hStart)/(x2-x1)*(x-x1) + hStart,hEnd));
 epsilon = 5e-3;
 eta_0 = @(x) zeros(size(x,1),1);
-phi_top_0 = @(x) 0.07*exp(-(x-.75).^2/epsilon); %zeros(size(x,1),1);
+phi_top_0 = @(x) 0.08*exp(-(x-.75).^2/epsilon); %zeros(size(x,1),1);
 
 top_faces = (1 : G.faces.num)';
 top_centroids = G.faces.centroids(G.faces.centroids(:, 2) == 1);
