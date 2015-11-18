@@ -1,14 +1,18 @@
 clc; clear; close all
 
-nx = 400;
-xstart=-20;
-xend = 20;
-T = 10;
+nx = 800;
+xstart=-100;
+xend = 100;
+plotFollow = ceil(nx/2);
+plotMin = -5;
+plotMax = 5;
+T = 20;
 x_0 = linspace(xstart, xend, nx)';
-
-epsilon = 1e-0;
-u_0 = @(x) 0.1*ones(size(x,1),1);
-eta_0 = @(x) ones(size(x,1),1) + 0.2*exp(-x.^2/epsilon);
+a = 0.1;
+epsilon = 1e0;
+seaLevel = 10;
+u_0 = @(x) 0.0*ones(size(x,1),1);
+eta_0 = @(x) seaLevel*ones(size(x,1),1) + 1*exp(-x.^2/epsilon);
 
 x = x_0;
 u = u_0(x);
@@ -21,7 +25,7 @@ W = u - 2*sqrtEta;
 while max(t)<T
     slopeV = u(1:end-1)  + sqrtEta(1:end-1);
     slopeW = u(2:end) - sqrtEta(2:end);
-    assert(all(abs(slopeW) <= abs(slopeV)));
+    assert(all(slopeW <= slopeV));
     dx = diff(x);
     dudx = -diff(u);
     etaPlus = sqrtEta(1:end-1) + sqrtEta(2:end);
@@ -43,7 +47,8 @@ while max(t)<T
     assert(all(uV-uW<1e-10));
     u = uV;
     plot(x,sqrtEta.^2);
-    axis([min(x),max(x)+1,0,2])
+    plotCenter = x(plotFollow);
+    axis([plotMin+plotCenter,plotMax+plotCenter,seaLevel-1,seaLevel+1])
     pause(0.1)
     if size(x,1)<2
         break
