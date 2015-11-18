@@ -7,8 +7,11 @@
 	Industrial Mathematics\\
 	NTNU \\\\
 }
-\title{TMA4195 \\
-       {\Huge \textbf{The Wave}}
+\title{
+TMA4195 \\ \vspace{5pt}
+\hrule \vspace{10pt}
+       {\Huge \textbf{Three Numerical Schemes for Simulating Waves}}
+\vspace{10pt}\hrule
 }
 \begin{document}
 \maketitle
@@ -282,57 +285,6 @@ If we are not altering the grid in the $x$-direction, we can then approximate $\
 
 We then choose $\nabla \phi|_{f_t}$ to be our approximation of $\nabla \phi$ at the centroid of $f_t$.
 
-
-
-
-\subsection{Transforming the Shallow Water Equations}
-We assume that the bottom has a constant slope, $h_x = a$ (note: we allow a = 0). Further set $\epsilon =1$, and let $\eta$ be the total wave height, that is $\eta = \epsilon\eta + h$ from Equation (5.1)$^*$ in the problem set. Then the shallow water equations can then be written in matrix form as
-\begin{equation}
-\begin{bmatrix}
-	\eta \\
-	u
-\end{bmatrix}_t
-+
-\begin{bmatrix}
-u	&& 	\eta \\
-1 	&&	u
-\end{bmatrix}
-\begin{bmatrix}
-\eta\\
-u
-\end{bmatrix}_x
-= 
-\begin{bmatrix}
-0\\
-a
-\end{bmatrix}
-\end{equation}
-The matrix has eigenvalues $\lambda_1 = u + \sqrt{\eta}$ and $\lambda_2 = u - \sqrt{\eta}$, with eigenvectors $v_1 = (1,1/\sqrt{\eta})^T$ and $v_2 = (1, {-}1\sqrt{\eta})^T$ respectively. This gives the two Riemann invariants
-\begin{align}
-	\begin{aligned}
-		V &= u + \int \frac{1}{\sqrt{\eta}} = u + 2\sqrt{\eta}\\
-		W &= u - \int \frac{1}{\sqrt{\eta}} = u - 2\sqrt{\eta}.
-	\end{aligned}
-\end{align}
-This gives us
-\begin{align}
-\begin{aligned}
-	\label{eq:shallowWaterRiemannV}
-	V_t + \lambda_1V_x &= \left(u_t + \frac{\eta_t}{\sqrt{\eta}}\right) + (u + \sqrt{\eta})\left(u_x + \frac{\eta_x}{\sqrt \eta}\right)\\
-	& = u_t + \left(\frac{1}{2}u^2 + \eta\right)_x + \frac{1}{\sqrt \eta}(\eta_t + (u\eta)_x) = a,
-\end{aligned}
-\end{align}
-and
-\begin{align}
-	\label{eq:shallowWaterRiemannW}
-	\begin{aligned}
-		W_t + \lambda_2W_x &= \left(u_t - \frac{\eta_t}{\sqrt{\eta}}\right) + (u - \sqrt{\eta})\left(u_x - \frac{\eta_x}{\sqrt \eta}\right)\\
-		& = u_t + \left(\frac{1}{2}u^2 + \eta\right)_x - \frac{1}{\sqrt \eta}(\eta_t + (u\eta)_x) = a.
-	\end{aligned}
-\end{align}
-
-
-
 A natural next step is now to implement the same procedure in three dimensions. To simplify the discretization, we first calculate
 the gradient of $\eta$ numerically, and then solve for $\eta^{n+1}$ explicitly. In matrix notation, we have
 \begin{align}
@@ -392,79 +344,10 @@ the seabed is flat.
 \caption{Illustrating example of a 2D wave (blue) with varying seabed (red) building up as it reaches the shallow end.}
 \label{fig:2dWave}
 \end{figure}
-
-\begin{figure}[!h]
-\centering
-\begin{subfigure}[b]{0.49\textwidth}
-\includegraphics[width=\textwidth]{fig/3dv2_1.eps}
-\label{fig1}
-\end{subfigure}
-\begin{subfigure}[b]{0.49\textwidth}
-\includegraphics[width=\textwidth]{fig/3dv2_2.eps}
-\label{fig1}
-\end{subfigure}
-\begin{subfigure}[b]{0.49\textwidth}
-\includegraphics[width=\textwidth]{fig/3dv2_3.eps}
-\label{fig1}
-\end{subfigure}
-\begin{subfigure}[b]{0.49\textwidth}
-\includegraphics[width=\textwidth]{fig/3dv2_5.eps}
-\label{fig1}
-\end{subfigure}
-\caption{Illustrating example of a 3D wave.}
-\label{fig:3dWave}
-\end{figure}
-
-\clearpage
-
 %
-%    Inundation
+%    Reduction of a linear model
 %
-\section{Inundation}
-When the wave approaches the shore, the water depth becomes small. We now want to show that when the water depth is much smaller than the typical wavelength, we can estimate the situation by the following equations 
-\begin{align}
-u_t + \left(\frac{1}{2}\varepsilon u^2 + \eta\right)_x = 0, \label{shallow2}\\
-\eta_t + (u(\varepsilon\eta + h))_x = 0 \label{shallow1}  
-\end{align}
-where $u = \phi_x$. \\
-\\
-In this section we assume the reader is familiar with scaling of variables and will not explain how this is done. To find \eqref{shallow2} we consider \eqref{eq:phiEq} and take the partial derivative with respect to $x$.
-We use scales $T$ for time, $\Phi$ for $\phi$, $X$ for the $x$-direction and $Z$ for the $z$-direction. For $\eta$ we scale with $E$ and for $h$ we scale with $H$. We assume the solution is invariant in the $y$-direction
-and use that $\phi_x=u$. Then we get 
-\begin{equation*}
-\frac{\Phi}{T}\frac{\partial u}{\partial t} + \frac{\Phi^2}{2X^2}\frac{\partial (u^2)}{\partial x}+ \frac{\Phi^2}{2Z^2}\frac{\partial(\phi_z^2)}{\partial x} + g\frac{E \partial \eta}{\partial x} = 0,
-\end{equation*}
-where $\partial\phi_z^2/\partial x=0$. We multiply by $T$ and divide by $\Phi$ and collect the derivatives with respect to $x$,
-\begin{equation}
-    \label{shallow2-ferdig}
-    u_t + \left(\frac{T\Phi}{2X^2}u^2 + \frac{gTE}{\Phi}\eta\right)_x = 0.
-\end{equation}
-From \eqref{shallow2-ferdig} we see that $E = \frac{\Phi}{T g}$ and $\varepsilon =\frac{\Phi T}{X^2}$, and we have derived \eqref{shallow2} for scaled variables.\\
-\\
-Next we want to derive \eqref{shallow1}. To do this, we start with \eqref{eq:etaEq} in $z = \eta$. When scaled this is 
-\begin{equation}
-    \label{eta_t..}
-    \eta_t + \frac{\Phi T}{X^2}\phi_x\eta_x - \frac{\Phi T}{ZE}\phi_z = 0,
-\end{equation}
-and see that we need an expression for $\phi_z$ in in $z = \eta$. We integrate the first equation of \eqref{eq:IncompNavierStokes} from $-h$ to $\eta$ and find 
-\begin{equation*}
-    \frac{1}{X^2}\phi_{xx}(E\eta + Hh) + \frac{1}{Z}\phi_z|_{z=\eta} - \frac{1}{Z}\phi_z|_{-h} = 0.
-\end{equation*}
-We also use from \eqref{2.9a} that in $z = -h$ we can use $\phi_z = -\phi_x\frac{n_x}{n_z} \approx -\phi_x h_x$. We now have an expression for $\phi_z$ in $z = \eta$ which is when scaled
-\begin{equation*}
-    \frac{1}{Z}\phi_z = - \frac{H}{X^2}\phi_x h_x - \frac{1}{X^2}\phi_{xx}(E\eta + Hh).
-\end{equation*}
-We insert this into \eqref{eta_t..} and get
-\begin{equation} 
-    \eta_t + \frac{\Phi T}{X^2}\phi_x\eta_x + \frac{T\Phi H}{EX^2}\phi_x h_x + \frac{T\Phi}{X^2}\phi_{xx}(\eta + h\frac{H}{E}) = 0.
-\end{equation}
-If we let $\varepsilon = \Phi T/X^2 $ as earlier and also let $\varepsilon = E/H$, then we get
-\begin{equation*}
-    \eta_t + (u\epsilon(\eta + h))_x = 0,
-\end{equation*}
-for the scaled variables, which is what we wanted to show. $\varepsilon$ turns out to be the scale of $\eta$ over the scale of $h$.  
-
-\section{Analysis}
+\section{Reduction of a linear model}
 We are asked to compute the solutions to the following problem:
 \begin{equation}
 \mu \phi _{xx} + \phi_{zz} = 0
@@ -531,8 +414,118 @@ We may use the superposition principle to assess the solution $\phi(x,z,t)$:
 \begin{equation}
 \sum_{k=0}^{\infty} Z_k e^{i\big(kx - \omega(k) t \big)}
 \end{equation}
+%
+%    Inundation
+%
+\section{Inundation}
+%
+%    Derivation of the shallow water equations
+%
+\subsection{Derivation of the shallow water equations}
+When the wave approaches the shore, the water depth becomes small. We now want to show that when the water depth is much smaller than the typical wavelength, we can estimate the situation by the following equations 
+\begin{align}
+    \label{eq:shallow}
+    \begin{cases}
+	    u_t + \left(\frac{1}{2}\varepsilon u^2 + \eta\right)_x & = 0 \\
+	    \eta_t + (u(\varepsilon\eta + h))_x & = 0
+	\end{cases},
+\end{align}
+where $u = \phi_x$. \\
+\\
+In this section we assume the reader is familiar with scaling of variables and will not explain how this is done. To find the first equation in \eqref{eq:shallow} we consider \eqref{eq:phiEq} and take the partial derivative
+with respect to $x$. We use scales $T$ for time, $\Phi$ for $\phi$, $X$ for the $x$-direction and $Z$ for the $z$-direction. For $\eta$ we scale with $E$ and for $h$ we scale with $H$. We assume the solution is
+invariant in the $y$-direction and use that $\phi_x=u$. Then we get 
+\begin{equation*}
+\frac{\Phi}{T}\frac{\partial u}{\partial t} + \frac{\Phi^2}{2X^2}\frac{\partial (u^2)}{\partial x}+ \frac{\Phi^2}{2Z^2}\frac{\partial(\phi_z^2)}{\partial x} + g\frac{E \partial \eta}{\partial x} = 0,
+\end{equation*}
+where $\partial\phi_z^2/\partial x=0$. We multiply by $T$ and divide by $\Phi$ and collect the derivatives with respect to $x$,
+\begin{equation}
+    \label{shallow2-ferdig}
+    u_t + \left(\frac{T\Phi}{2X^2}u^2 + \frac{gTE}{\Phi}\eta\right)_x = 0.
+\end{equation}
+From \eqref{shallow2-ferdig} we see that $E = \frac{\Phi}{T g}$ and $\varepsilon =\frac{\Phi T}{X^2}$, and we have derived the first equation in \eqref{eq:shallow} for scaled variables.
+%
+%    Transforming the Shallow Water Equations
+%
 
-\subsection{Solving the Shallow Water Equation Numerically}
+
+Next we want to derive the second equations of \eqref{eq:shallow}. To do this, we start with \eqref{eq:etaEq} in $z = \eta$. When scaled this is 
+\begin{equation}
+    \label{eta_t..}
+    \eta_t + \frac{\Phi T}{X^2}\phi_x\eta_x - \frac{\Phi T}{ZE}\phi_z = 0,
+\end{equation}
+and see that we need an expression for $\phi_z$ in in $z = \eta$. We integrate the first equation of \eqref{eq:IncompNavierStokes} from $-h$ to $\eta$ and find 
+\begin{equation*}    
+    \frac{1}{X^2}\phi_{xx}(E\eta + Hh) + \frac{1}{Z}\phi_z|_{z=\eta} - \frac{1}{Z}\phi_z|_{-h} = 0.
+\end{equation*}
+We also use from \eqref{eq:phit} that in $z = -h$ we can use $\phi_z = -\phi_x\frac{n_x}{n_z} \approx -\phi_x h_x$. We now have an expression for $\phi_z$ in $z = \eta$ which is when scaled
+\begin{equation*}
+    \frac{1}{Z}\phi_z = - \frac{H}{X^2}\phi_x h_x - \frac{1}{X^2}\phi_{xx}(E\eta + Hh).
+\end{equation*}
+We insert this into \eqref{eta_t..} and get
+\begin{equation} 
+    \eta_t + \frac{\Phi T}{X^2}\phi_x\eta_x + \frac{T\Phi H}{EX^2}\phi_x h_x + \frac{T\Phi}{X^2}\phi_{xx}(\eta + h\frac{H}{E}) = 0.
+\end{equation}
+If we let $\varepsilon = \Phi T/X^2 $ as earlier and also let $\varepsilon = E/H$, then we get
+\begin{equation*}
+    \eta_t + (u\epsilon(\eta + h))_x = 0,
+\end{equation*}
+for the scaled variables, which is what we wanted to show. $\varepsilon$ turns out to be the scale of $\eta$ over the scale of $h$.
+
+\subsection{Transforming the Shallow Water Equations}
+We now want to decouple the \emph{variables} of the shallow water equations \ref{eq:shallow}. To this end, 
+assume that the bottom has a constant slope, $h_x = a$ (note: we allow $a$ = 0). Further set $\epsilon =1$,
+and let $\eta$ be the total wave height, that is $\eta = \epsilon\eta + h$ from Equation \eqref{eq:shallow}.
+Then the shallow water equations can then be written in matrix form as
+\begin{equation}
+\begin{bmatrix}
+	\eta \\
+	u
+\end{bmatrix}_t
++
+\begin{bmatrix}
+u	&& 	\eta \\
+1 	&&	u
+\end{bmatrix}
+\begin{bmatrix}
+\eta\\
+u
+\end{bmatrix}_x
+= 
+\begin{bmatrix}
+0\\
+a
+\end{bmatrix}
+\end{equation}
+The matrix has eigenvalues $\lambda_1 = u + \sqrt{\eta}$ and $\lambda_2 = u - \sqrt{\eta}$, with eigenvectors $v_1 = (1,1/\sqrt{\eta})^T$ and $v_2 = (1, {-}1\sqrt{\eta})^T$ respectively. This gives the two Riemann invariants
+\begin{align}
+	\begin{aligned}
+		V &= u + \int \frac{1}{\sqrt{\eta}} = u + 2\sqrt{\eta}\\
+		W &= u - \int \frac{1}{\sqrt{\eta}} = u - 2\sqrt{\eta}.
+	\end{aligned}
+\end{align}
+This gives us
+\begin{align}
+\begin{aligned}
+	\label{eq:shallowWaterRiemannV}
+	V_t + \lambda_1V_x &= \left(u_t + \frac{\eta_t}{\sqrt{\eta}}\right) + (u + \sqrt{\eta})\left(u_x + \frac{\eta_x}{\sqrt \eta}\right)\\
+	& = u_t + \left(\frac{1}{2}u^2 + \eta\right)_x + \frac{1}{\sqrt \eta}(\eta_t + (u\eta)_x) = a,
+\end{aligned}
+\end{align}
+and
+\begin{align}
+	\label{eq:shallowWaterRiemannW}
+	\begin{aligned}
+		W_t + \lambda_2W_x &= \left(u_t - \frac{\eta_t}{\sqrt{\eta}}\right) + (u - \sqrt{\eta})\left(u_x - \frac{\eta_x}{\sqrt \eta}\right)\\
+		& = u_t + \left(\frac{1}{2}u^2 + \eta\right)_x - \frac{1}{\sqrt \eta}(\eta_t + (u\eta)_x) = a.
+	\end{aligned}
+\end{align}
+%
+%    Solving the shallow water equations numerically
+%
+\subsection{Solving the shallow water equation numerically}
+
+\subsubsection{A method of characteristics}
 Assume a flat bottom, i.e, $a = 0$. We present a scheme for solving the coupled equations \eqref{eq:shallowWaterRiemannV} and \eqref{eq:shallowWaterRiemannW}. Along each characteristics, $x^V(t)$ and $x^W(t)$, $V$ and $W$ are constants. For small time steps we assume $\lambda_1$ and $\lambda_2$ constant, which gives the linear characteristics
 \begin{align}
 	\label{eq:characteristicEqVandW}
@@ -566,5 +559,90 @@ For the characteristics $x^V(t)$ and $x^W(t)$ starting in the same point $(x_i,t
 	\label{alg:ShallowWaterConstSeaBed}
 \end{algorithm}
 
+\begin{figure}[!h]
+\centering
+\begin{subfigure}[b]{0.24\textwidth}
+\includegraphics[width=\textwidth]{fig/shallowChar_1.eps}
+\label{fig1}
+\end{subfigure}
+\begin{subfigure}[b]{0.24\textwidth}
+\includegraphics[width=\textwidth]{fig/shallowChar_2.eps}
+\label{fig1}
+\end{subfigure}
+\begin{subfigure}[b]{0.24\textwidth}
+\includegraphics[width=\textwidth]{fig/shallowChar_4.eps}
+\label{fig1}
+\end{subfigure}
+\begin{subfigure}[b]{0.24\textwidth}
+\includegraphics[width=\textwidth]{fig/shallowChar_3.eps}
+\label{fig1}
+\end{subfigure}
+\caption{Illustrating example of a 2D shallow water wave solved using Algorithm \ref{alg:ShallowWaterConstSeaBed}.}
+\label{fig:2dWave}
+\end{figure}
+%
+%    A fast and stable implementation
+%
+\subsubsection{A fast and stable implementation}
+We now proceed to implement the method described in \cite{somRef2}. The numerical flux $\mathcal{F}$ was approximated by
+\begin{align*}
+    \mathcal{F}(U, W) = \frac{1}{2}\big(F(U) + F(W)\big),
+\end{align*}
+where $F(U) = \big(hu, hu^2 + \frac{1}{2}gh^2\big)^\top$.
+A plot of the solution is shown in Figure \ref{fig:Somfig}.
+\begin{figure}
+\centering
+\begin{subfigure}[b]{0.24\textwidth}
+\includegraphics[width=\textwidth]{fig/shallowChar_1.eps}
+\label{fig1}
+\end{subfigure}
+\begin{subfigure}[b]{0.24\textwidth}
+\includegraphics[width=\textwidth]{fig/shallowChar_2.eps}
+\label{fig1}
+\end{subfigure}
+\begin{subfigure}[b]{0.24\textwidth}
+\includegraphics[width=\textwidth]{fig/shallowChar_4.eps}
+\label{fig1}
+\end{subfigure}
+\begin{subfigure}[b]{0.24\textwidth}
+\includegraphics[width=\textwidth]{fig/shallowChar_3.eps}
+\label{fig1}
+\end{subfigure}
+\caption{Illustrating example of a 2D shallow water wave solved using the method described in \cite{somRef2}}
+\label{fig:2dWave}
+\end{figure}
+%
+%    Final remarks
+%
+\section{Final remarks}
+We have done a lot of stuff, whioch shiould fgive an A.
 
+\clearpage
+\section*{Appendix}
+
+\begin{figure}[!h]
+\centering
+\begin{subfigure}[b]{\textwidth}
+\includegraphics[width=\textwidth]{fig/3dv2_1.eps}
+\label{fig1}
+\end{subfigure}
+\begin{subfigure}[b]{\textwidth}
+\includegraphics[width=\textwidth]{fig/3dv2_2.eps}
+\label{fig1}
+\end{subfigure}
+\caption{Illustrating example of a 3D wave.}
+\end{figure}
+\clearpage
+\begin{figure}
+\begin{subfigure}[b]{\textwidth}
+\includegraphics[width=\textwidth]{fig/3dv2_3.eps}
+\label{fig1}
+\end{subfigure}
+\begin{subfigure}[b]{\textwidth}
+\includegraphics[width=\textwidth]{fig/3dv2_5.eps}
+\label{fig1}
+\end{subfigure}
+\caption{Illustrating example of a 3D wave.}
+\label{fig:3dWave}
+\end{figure}
 \end{document}
