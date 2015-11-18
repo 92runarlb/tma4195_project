@@ -236,6 +236,112 @@ Since we are not altering the grid in the $x$-direction, we can then approximate
 \begin{align*}
     \nabla \phi|_{f_t} \approx |f_t|^{-1} v_{f_t} \bm{n}_{f_t} + \frac{1}{2}(|f_l|^{-1}v_{f_l}-|f_r|^{-1}v_{f_r})\bm{n}_{f_r}.
 \end{align*}
+
 We then choose $\nabla \phi|_{f_t}$ to be our approximation of $\nabla \phi$ at the centroid of $f_t$.
+
+
+
+
+\subsection{Transforming the Shallow Water Equations}
+We assume that the bottom has a constant slope, $h_x = a$ (note: we allow a = 0). Further set $\epsilon =1$, and let $\eta$ be the total wave height, that is $\eta = \epsilon\eta + h$ from Equation (5.1)$^*$ in the problem set. Then the shallow water equations can then be written in matrix form as
+\begin{equation}
+\begin{bmatrix}
+	\eta \\
+	u
+\end{bmatrix}_t
++
+\begin{bmatrix}
+u	&& 	\eta \\
+1 	&&	u
+\end{bmatrix}
+\begin{bmatrix}
+\eta\\
+u
+\end{bmatrix}_x
+= 
+\begin{bmatrix}
+0\\
+a
+\end{bmatrix}
+\end{equation}
+The matrix has eigenvalues $\lambda_1 = u + \sqrt{\eta}$ and $\lambda_2 = u - \sqrt{\eta}$, with eigenvectors $v_1 = (1,1/\sqrt{\eta})^T$ and $v_2 = (1, {-}1\sqrt{\eta})^T$ respectively. This gives the two Riemann invariants
+\begin{align}
+	\begin{aligned}
+		V &= u + \int \frac{1}{\sqrt{\eta}} = u + 2\sqrt{\eta}\\
+		W &= u - \int \frac{1}{\sqrt{\eta}} = u - 2\sqrt{\eta}.
+	\end{aligned}
+\end{align}
+This gives us
+\begin{align}
+\begin{aligned}
+	\label{eq:shallowWaterRiemannV}
+	V_t + \lambda_1V_x &= \left(u_t + \frac{\eta_t}{\sqrt{\eta}}\right) + (u + \sqrt{\eta})\left(u_x + \frac{\eta_x}{\sqrt \eta}\right)\\
+	& = u_t + \left(\frac{1}{2}u^2 + \eta\right)_x + \frac{1}{\sqrt \eta}(\eta_t + (u\eta)_x) = a,
+\end{aligned}
+\end{align}
+and
+\begin{align}
+	\label{eq:shallowWaterRiemannW}
+	\begin{aligned}
+		W_t + \lambda_2W_x &= \left(u_t - \frac{\eta_t}{\sqrt{\eta}}\right) + (u - \sqrt{\eta})\left(u_x - \frac{\eta_x}{\sqrt \eta}\right)\\
+		& = u_t + \left(\frac{1}{2}u^2 + \eta\right)_x - \frac{1}{\sqrt \eta}(\eta_t + (u\eta)_x) = a.
+	\end{aligned}
+\end{align}
+
+\subsection{Solving the Shallow Water Equation Numerically}
+Assume a flat bottom, i.e, $a = 0$. We present a scheme for solving the coupled equations \eqref{eq:shallowWaterRiemannV} and \eqref{eq:shallowWaterRiemannW}. Along each characteristics, $x^V(t)$ and $x^W(t)$, $V$ and $W$ are constants. For small time steps we assume $\lambda_1$ and $\lambda_2$ constant, which gives the linear characteristics
+\begin{align}
+	\label{eq:characteristicEqVandW}
+	x^V(t^V_0+\Delta t_V) = x^V_0 + \lambda_1(x_0,t^V_0)\Delta t_V ,\quad x^W(t^V_0+\Delta t_W) = x^W_0 + \lambda_2(x_0,t_0^W)\Delta t_W.
+\end{align}
+These two lines cross each other when 
+\begin{equation}
+\label{eq:characteristicCross}
+\Delta t_v = \frac{x_0^W - x_0^V + \lambda_2(x_0^W,t_0^W)(t_0^V - t_0^W)}{\lambda_1(x_0^V,t_0^V)+\lambda_2(x_0^W,t_0^W)}
+\end{equation}
+
+Using this present a natural numerical solution given in  Algorithm \ref{alg:ShallowWaterConstSeaBed}.  
+For the characteristics $x^V(t)$ and $x^W(t)$ starting in the same point $(x_i,t_i)$ we know that $\frac{\d x^V}{\d t}\geq \frac{\d x^W}{\d t}$ since $\lambda_1(x_i,t_i)\geq \lambda_2(x_i,t_i)$, so the characteristic of $V_i^j$ will always cross the characteristic of $W_{i+1}^j$ before any other. 
+\begin{algorithm}
+	\caption{Shallow Water Constant Sea Bed}
+	\begin{algorithmic}[1]
+		\State    Input:$\{(x^0_i,t^0_i)\}_{i=1\ldots n}$, $\eta^0_i=\eta(x^0_i,t^0_i)$, $u^0_i = u(x_i^0,t^0_i)$,  $T$.
+
+		\State $j\leftarrow 0$
+		\While    {$\max t^j_i < T$}
+		\State $V^j_i \leftarrow u_i + 2\sqrt{\eta_i}$
+		\State $W^j_i \leftarrow u_i - 2\sqrt{\eta_i}$
+		\State From each point $(x^j_i,t^j_i)$, calculate crossing points using 		
+		\eqref{eq:characteristicEqVandW} and \eqref{eq:characteristicCross}
+		\State Set $(x^{j+1}_i,t^{j+1}_i)$ equal to the crossing points.
+		\State $\eta_i^{j+1} \leftarrow \left(\frac{V_i^j -W_i^j}{4}\right)^2$
+		\State $u_i^{j+1} \leftarrow V - 2\sqrt{\eta_i^{j+1}}$
+		\State $j\leftarrow j + 1$
+		\EndWhile
+	\end{algorithmic}
+	\label{alg:ShallowWaterConstSeaBed}
+\end{algorithm}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 \end{document}
