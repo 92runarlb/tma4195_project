@@ -125,7 +125,7 @@ function [phi, gradPhi_top, G] = poissonMimetic2D(G, h, phi_top, eta, gridLimits
     xx = zeros(size(x));
     x1 = x(:, 1);
     xx(:, 1) = x1;
-    xx(:, 2) = -h(x1) + (eta + h(x1)).*x(:, 2);
+    xx(:, 2) = -h(x1) + (eta + h(x1)).*x(:, 2)/gridLimits(2);
     G.nodes.coords = xx;
     
     G = computeGeometry(G);

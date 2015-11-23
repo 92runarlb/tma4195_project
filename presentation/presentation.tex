@@ -1,6 +1,11 @@
 \documentclass[screen]{beamer}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
+\usepackage{multimedia}
+
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{bm}
 
 
 % Bruk NTNU-temaet for beamer (her i bokmålvariant), alternativer er
@@ -18,15 +23,13 @@
 % Angir foredragsholder, også en (valgfri) kortversjon i
 % hakeparanteser først som kommer nederst på hver slide:
 \author[aut]{Aga, Kristian \\ Berge, Runar L. \\ Klemetsdal Øystein S.,\\
-	Myrvoll Nilsen, Eirik \\ Selle, Maria\\
-	Industrial Mathematics\\
-	NTNU
+	Myrvoll Nilsen, Eirik \\ Selle, Maria.
 }
 
 
 % Institusjon. Bruk gjerne disse slik det passer best med det du vil
 % ha.  Valgfri kortversjon her også
-\institute[NTNU]{Institutt for matematiske fag}
+%\institute[NTNU]{Institutt for matematiske fag}
 
 % Datoen blir også trykket på forsida. 
 \date{November 23., 2015}
@@ -41,13 +44,13 @@
 
 \section*{Modelling}
 \begin{frame}
-    \frametitle{Modelling}
+    \frametitle[jaddA]{Inundation}
     \begin{enumerate}[\label = $\circ$]
         \item    owje
         \item    Jee
         \item    Hm
     \end{enumerate}
-    \begin{block}{This is a textbox with meaningfull eqauations}
+    \begin{block}{This is a textbox with meaningful equations}
         \begin{align*}
             rhs = lhs.
         \end{align*}
@@ -55,7 +58,7 @@
 \end{frame}
 
 \begin{frame}
-    \frametitle{Analysis}
+    \frametitle{Inundation}
     \begin{itemize}
         \pause
         \item    h1
@@ -63,15 +66,33 @@
         \item    h2    
     \end{itemize}
     \pause
-    \begin{block}{This is a textbox with meaningfull eqauations}
+    \begin{block}{This is another textbox with meaningful equations}
         \begin{align*}
             rhs = lhs.
         \end{align*}
     \end{block}
 \end{frame}
 
+\section*{Numerical solutions}
 
-\section*{Numerical Solutions of the Shallow Water Equation}
+\begin{frame}
+    \frametitle{Mimetic finite difference/ forward difference scheme (M(FD)$^2$S)}
+    \begin{align*}
+        & \Delta \phi = 0 \\
+        & \eta_t + \nabla\phi\cdot \big(\eta_x, \eta_y, - 1\big) = 0 \\
+        & \phi_t + \frac{1}{2}|\nabla \phi |^2 + g\eta = 0.
+    \end{align*}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Calculating $\nabla \phi$}
+	\only<1-1>{
+	\begin{figure}[b]
+		\centering
+		\includegraphics[width=0.5\textwidth]{fig/calculatingFlux.eps}
+	\end{figure}
+	}
+\end{frame}
 
 \begin{frame}
 	\frametitle{Numerical Solutions of the Shallow Water Equation}

@@ -14,7 +14,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="calculatingFlux.eps">
+   sodipodi:docname="calculatingFlux.svg">
   <defs
      id="defs4" />
   <sodipodi:namedview
@@ -25,15 +25,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.979899"
-     inkscape:cx="245.8093"
-     inkscape:cy="272.24761"
+     inkscape:cx="205.4032"
+     inkscape:cy="252.04456"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:window-width="1266"
-     inkscape:window-height="1098"
-     inkscape:window-x="202"
-     inkscape:window-y="103"
+     inkscape:window-height="716"
+     inkscape:window-x="100"
+     inkscape:window-y="24"
      inkscape:window-maximized="0">
     <inkscape:grid
        type="xygrid"
@@ -51,7 +51,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -139,7 +139,7 @@
          x="209.60664"
          y="138.36539">V<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan3031">1</tspan></tspan></text>
+   id="tspan3219">t</tspan></tspan></text>
     <text
        xml:space="preserve"
        style="font-size:25px;font-style:italic;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans Italic"
@@ -153,7 +153,7 @@
          x="434.3656"
          y="219.68266">V<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan3037">2</tspan></tspan></text>
+   id="tspan3223">r</tspan></tspan></text>
     <text
        xml:space="preserve"
        style="font-size:25px;font-style:italic;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans Italic"
@@ -167,6 +167,6 @@
          x="25.75889"
          y="347.46698">V<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan3049">4</tspan></tspan></text>
+   id="tspan3221">l</tspan></tspan></text>
   </g>
 </svg>
