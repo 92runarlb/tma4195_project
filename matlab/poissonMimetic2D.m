@@ -161,7 +161,7 @@ function [phi, gradPhi_top, G] = poissonMimetic2D(G, h, phi_top, eta, gridLimits
     source_rhs = [zeros(nhf, 1); source_rhs; zeros(nif, 1); zeros(nnhf, 1)];
     dirich_rhs = [dirich_rhs; zeros(nc + nif + nnhf, 1)];
     neumann_rhs = [zeros(nhf+nc+nif, 1); neumann_rhs];
-    rhs = source_rhs + dirich_rhs + neumann_rhs;
+    rhs = source_rhs + dirich_rhs + neumann_rhs;    
 
     %%  Schur reduction
 
@@ -178,7 +178,7 @@ function [phi, gradPhi_top, G] = poissonMimetic2D(G, h, phi_top, eta, gridLimits
     phi_neu = sol([false(nc, 1); false(nif, 1); true(nnhf, 1)]);
     
     %   Calculate half-face fluxes
-    gradPhiN = BI*(dirich_rhs(1:nhf) - C*phi - D*pii - N*phi_neu);
+    gradPhiN = BI*(dirich_rhs(1:nhf) - C*phi - D*pii - N*phi_neu);  
    
     %%  Find |\nabla \phi|^2 in all top face centroid
     
