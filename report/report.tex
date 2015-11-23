@@ -24,7 +24,12 @@ TMA4195 \\ \vspace{5pt}
 	the propagation and finally the run-up of the wave. \emph{Noen som kan skriver om de numeriske metodene.}
 	The main result of this project is that the wave uses about 3.5 minutes to reach Hellesylt and will be about 20 m high at this point. 
 \end{abstract}
+\thispagestyle{empty}
 \clearpage
+\tableofcontents
+\thispagestyle{empty}
+\clearpage
+\setcounter{page}{1}
 %
 %    INTRODUCTION
 %
@@ -117,10 +122,10 @@ Hence, conservation of momentum yields
 %    Two vector calculus results
 %
 \subsection{Two vector calculus results}
-
-Let $\phi$ be a scalar function, we have
+With flow velocity being incompressible and with $\nabla \times \bm{v} = 0$ in mind, we can state that the flow velocity is path independent. Thus the flow velocity is the function of the gradient of some potential $\phi$.
+Furthemore, let $\phi$ be a scalar function, we have
 \begin{align*}
-    \nabla \times (\nabla \phi) = \nabla \times (\phi_x, \phi_y, \phi_z) =
+    \nabla \times \bm{v} = \nabla \times (\nabla \phi) = \nabla \times (\phi_x, \phi_y, \phi_z) =
         \big(\phi_{zy} - \phi_{yz}, -(\phi_{zx} - \phi_{xz}), \phi_{xy} - \phi_{yx} \big).
 \end{align*}
 From the properties of the mixed partial derivative, we have $\phi_{x_i x_j} = \phi_{x_j x_i}$. Hence,
@@ -128,7 +133,6 @@ From the properties of the mixed partial derivative, we have $\phi_{x_i x_j} = \
     \label{eq:curlScalar}
     \nabla \times (\nabla \phi) = 0 \quad \forall \text{ scalar functions } \phi.
 \end{align}
-
 We will also use the vector calculus identity
 \begin{align}
     \label{eq:vecCalc}
@@ -203,37 +207,112 @@ Furthermore inserting $z = \eta(x,y)$ into \eqref{eq:IncompNavierStokes} and usi
 %
 %    Reduction of a linear model
 %
-
-
-%HER KOMMER FØRSTE ANALYSEDEL!!!
-%
-%
 \section{Reduction of a linear model} 
-We are asked to compute the solutions to the following problem:
-\begin{equation}
-\mu \phi _{xx} + \phi_{zz} = 0
-\label{eq-ana:sjefsproblemet}
-\end{equation}
-With boundary conditions
-\begin{equation}
-\phi _z = 0
-\end{equation}
-for $z = -1$, and
-\begin{equation}
-\mu \phi_{tt} + \phi_z = 0
-\end{equation}
-for $z = 0$.
+\subsection{Undimensionalization}
+We wish to undimensionalize the equations \eqref{eq:IncompNavierStokes}, \eqref{eq:phit}, \eqref{eq:etaEq} and \eqref{eq:phiEq}. Let $u^*$ be an unscaled physical quantity and scale such that $u^* = \mathcal{U}u$, where $u$ is the dimensionless scaled variable, and $u^*$ and $\mathcal{U}$ has the same units. We start by scaling the variables, and make some assumptions. 
 
-We decide to use separation of variables:
-\begin{equation}
-\phi(x,z,t) = X(x)Z(z)T(t)
+
+Assume that the waves are small compared to the depth of the fjord so that $\eta^* =\max(\eta)\eta = N \eta$ with $N << 1$. Assume also that the bottom of the fjord is smooth without peaks so that we can use a constant $h^* = \max(h^*) = h$. The following scales are chosen for the rest of the variables\\
+\\
+$
+x^* = Lx, \text{ where }L\text{ is the wavelength}\\
+y^* = By, \text{ where }B\text{ is also the wavelength}\\
+z^* = \max(h^*)z = hz\\
+p^*-p_{atm} = -\rho g z^* p =- \rho g z h p \\
+t^* = Tt =  \sqrt{\frac{L^3}{h^2g}}  t \\
+\phi^*=\Phi \phi\\
+\bm{v}^*=\nabla \phi^*=[\frac{\Phi}{L}\phi_x,\frac{\Phi}{B}\phi_y, \frac{\Phi}{h} \phi_z]=  [\sqrt{gh} \phi_x, \sqrt{gh} \phi_y, \frac{\Phi}{h} \phi_z]\\
+\eta^*=N \eta$\\
+
+
+The scale for $\bm{v}$ is choosen from the fact that shallow water waves travel with the phase velocity $\sqrt{gh}$. Thus we have the relation $\Phi= L \sqrt{gh}$. The scaling of $T$ will be explained later. 
+
+
+We start with the first equation in \eqref{eq:IncompNavierStokes} which is $\Delta \phi^* = 0 \text{ for } z^* \in(-h^*, \eta^*)$ and insert the scaled quantities
+\begin{align*}
+%\frac{\partial^2\phi^*}{\partial x^{*^2}} +  \frac{\partial^2\phi^*}{\partial y^{*^2}} + \frac{\partial^2\phi^*}{\partial z^{*^2}} = 0 \text{ for } z^* \in(-h^*, \eta^*) \\
+\frac{\Phi\partial^2\phi}{L^2\partial x^{2}} +  \frac{\Phi\partial^2\phi}{B^2\partial y^{2}} + \frac{\Phi\partial^2\phi}{h^2\partial z^{2}} = 0 \text{ for } zh \in(-h, N\eta).
+\end{align*}
+We have that $L \sim B \gtrsim h$ and $N\eta \approx 0$. Hence,
+\begin{equation}\label{2.8a scaled}
+\begin{aligned}
+\frac{h^2\phi_{xx}}{L^2} + \frac{h^2\phi_{yy}}{B^2} + \phi_{zz} = 0 \text{ for } z \in(-1,0) \\
+\end{aligned}
 \end{equation}
+
+
+Next consider \eqref{eq:phit} which is $
+\Phi \nabla \phi \cdot \bm{n} = 0 $ for $ zh + h = 0$. This becomes
+\begin{align}\label{2.9a scaled}
+%\frac{\Phi \partial \phi}{h \partial z} = 0 \\
+\nabla \phi \cdot \bm{n} = 0
+\end{align}
+for $z +1 = 0$.
+
+
+Now, we move on to the second equation in \eqref{eq:IncompNavierStokes} and insert the scaled variables and divide by $\frac{\Phi}{T}$ to make the equation non-dimensional. We get
+\begin{equation*}
+\frac{\partial \phi}{\partial t} + \frac{\Phi T}{2}\Big((\frac{\partial \phi}{L\partial x})^2 + (\frac{\partial\phi}{B\partial y})^2 + (\frac{\partial \phi}{h\partial z})^2\Big) - \frac{\rho g z h p T }{\Phi} + \frac{Tghz}{\Phi} = 0.
+\end{equation*}
+Now only \eqref{eq:etaEq} and \eqref{eq:phiEq} remains to be scaled. %We scale them, keeping in mind that we want to end up with equations (3.1) in the project description.
+To scale equation \eqref{eq:etaEq}, we insert the scaled variables, multiply by $T/N$ and move $\eta_t$ to the left-hand-side. We recieve
+\begin{equation} \label{etat}
+ \eta_t = T (-\frac{\Phi}{L^2} \phi_x  \eta_x - \frac{\Phi}{B^2} \phi_y \eta_y + \frac{\Phi}{hN} \phi_z ),
+\end{equation}
+for $z = N\eta \approx 0$.
+Inserting the scaled variables in equation \eqref{eq:phiEq} we get
+\begin{equation} \label{eq13}
+\frac{ h}{g T^2 } \frac{\partial \phi }{\partial t} + \frac{h}{g\Phi T}\Big((\frac{\Phi \phi_x}{L})^2+(\frac{\Phi \phi_y}{B})^2+(\frac{\Phi \phi_z}{h})^2\Big) + \frac{Nh}{\Phi T}\eta = 0,
+\end{equation}
+for $z = N\eta \approx 0$.
+
+
+Now we do a partial derivation of \eqref{eq13} with respect to $t$ and substitute $\eta_t$ from equation \eqref{etat} into the new equation. We recieve the following
+\begin{equation} \label{ti}
+\frac{ h}{ g T^2 } \phi_{tt}+ \frac{h}{g \Phi T} \phi_t\Big((\frac{\Phi \phi_x}{L})^2+(\frac{\Phi \phi_y}{B})^2+(\frac{\Phi \phi_z}{h})^2\Big) + Nh(-\frac{1}{L^2} \phi_x  \eta_x - \frac{1}{B^2} \phi_y \eta_y + \frac{1}{hN} \phi_z ) = 0.
+\end{equation}
+Thus, we have roughly completed the scaling and udimensionalization of the equations. We should however try to specify the scalars where possible, but we will wait with this until after we have explained what happens when we neglect non-linear terms in the two-dimensional case.
+
+
+We want to make a linearized model for the wave in the domain and in the boundaries. We first assume that the solution is invariant in the $y$-direction such that we can neglect these terms from our equations. Equation \eqref{2.8a scaled} reduces to 
+\begin{equation} \label{3.1a}
+\mu \phi_{xx} + \phi_{zz} = 0\text{, where }\mu = h^2/L^2,
+\end{equation}
+for $x \in \mathbb{R}$ and $z \in (-1,0)$. $\mu$ represents the ratio of the depth of the fjord and the typical wavelenght.  We have assumed that the bottom surface is smooth such that  $\mathbf{n} \approx [0,0,1]$. Then \eqref{2.9a scaled} becomes
+\begin{align*}
+%\frac{\Phi \partial \phi}{h \partial z} = 0 \\
+\phi_z = 0,
+\end{align*}
+for $z +1 = 0$.
+Additionally, we can simplyfy equation \eqref{ti} such that it becomes
+\begin{equation} \label{almost3.1c}
+\mu_2 \phi_{tt} + \epsilon_1 \frac{\partial }{\partial t} \phi_x^2+ \epsilon_2 \frac{\partial }{\partial t}\phi_z^2 - \epsilon_3 \phi_x  \eta_x +  \phi_z  = 0,
+\end{equation}
+where $\mu_2=\frac{h}{gT^2}$, $\epsilon_1= \frac{h^2}{L^2} \sqrt{\frac{h}{L}}$, $\epsilon_2=\sqrt{\frac{h}{L}}$ and $\epsilon_3=\frac{Nh}{L^2}$.
+From the project description, we know that $\mu$ in \eqref{3.1a} and $\mu_2$ in \eqref{almost3.1c} must be equal. Since $\mu=\frac{h^2}{L^2}$ and $\mu_2=\frac{L}{T^2g}$ this gives $\frac{h^2}{L^2}=\frac{L}{T^2g} \Rightarrow T=\sqrt{(\frac{L^3}{h^2g})}$.
+When we neglect the non-linear terms of \eqref{almost3.1c}, that is remove the terms coupled with $\epsilon_1, \epsilon_2, \epsilon_3$, equation \eqref{almost3.1c} becomes
+\begin{equation*}
+\mu \phi_{tt}+ \phi_z=0.
+\end{equation*}
+Furthermore it would be reasonable to assume that $0<\epsilon_n<<1$ for $n=1,2,3$, such that neglection of the non-linear terms is reasonable. By linearinzing our scaled equations we have found the scale $T$, and made assumptions for the $\epsilon$'s. We note that we do not have $\eta$ in any of the linearized equations. This is because $\eta$ is expressed through $\phi$ when we combine equations \eqref{eq:etaEq} and \eqref{eq:phiEq}.
+
+\subsection{Solving the linear model}
+We now want to solve the linear model, which we summarize as
+\begin{equation}
+    \begin{cases}
+		\label{eq-ana:sjefsproblemet}
+		\mu \phi _{xx} + \phi_{zz} = 0, x \in \mathbb{R}, 0 \leq z \leq 1 \\
+	    \phi _z = 0,    & z = -1 \\
+	    \mu \phi_{tt} + \phi_z = 0, & z = 0
+    \end{cases}
+\end{equation}
+Using separation of variables, we write $\phi(x,z,t) = X(x)Z(z)T(t)$.
 
 After imposing harmonic boundaries i.e. $\phi(x) = \phi(x+L)$ ($L$ is the distance in direction $x$ in our domain of consideration)
 we now that $X(x)$ must be harmonic. The same argument goes for $T(t)$. This leads us to the equation
-\begin{equation}
+\begin{equation*}
 \phi_k (x,z,t) = Z_k(z) \exp \Big( i \big( kx - \omega(k)t \big) \Big)
-\end{equation}
+\end{equation*}
 where $k=\frac{2 \pi n}{L}$, a necessity to make $X(x) = X(x+L) = 0$. $k$ can take multiple values as a function of $n$,
 all of which lead to different solution to our problem \eqref{eq-ana:sjefsproblemet}. Lets start by puting the separated $\phi$ into the primary equation.
 \begin{equation}
@@ -243,18 +322,18 @@ all of which lead to different solution to our problem \eqref{eq-ana:sjefsproble
 
 Which must be constant as both sides of the equation are functions of different variables. Equation \eqref{eq-ana:separasjon}
 leads to a second order differential equation that can be solved using characteristic equations
-\begin{equation}
+\begin{equation*}
 Z''(z) - \mu k^2 Z(z) \Longleftrightarrow r^2 - \mu k^2 = 0.
-\end{equation}
+\end{equation*}
 Solving the characteristic equation gives us $r = \pm \sqrt{\mu}k$ meaning
-\begin{equation}
+\begin{equation*}
 Z(z) = A e^{\sqrt{\mu}k z} + Be^{-\sqrt{\mu}k z}
-\end{equation}
+\end{equation*}
 
 Using the initial condition for $z = -1$ we find an expression for the constant $B$, which inserted into the expression for $Z(z)$ leads to
-\begin{equation}
+\begin{equation*}
 Z_k(z) = A_k \left( e^{\sqrt{\mu}kz} + e^{ \sqrt{\mu}k(z+2) } \right).
-\end{equation}
+\end{equation*}
 
 The other initial condition (for $z=0$) makes us able to find an expression for the dispersion constant, $\omega(k)$,
 \begin{equation}
@@ -262,14 +341,14 @@ The other initial condition (for $z=0$) makes us able to find an expression for 
 \label{eq-ana:ini2}
 \end{equation}
 Solving \eqref{eq-ana:ini2} with respect to $\omega(k)$, we find
-\begin{equation}
+\begin{equation*}
 \omega(k) = \left( \frac{k}{\sqrt{\mu}} \right)^{\frac{1}{2}}
-\end{equation}
+\end{equation*}
 
 We now have an expression for each solution $\phi_k(x,z,t)$,
-\begin{equation}
+\begin{equation*}
 \phi_k(x,z,t) = A_k \left( e^{\sqrt{\mu}kz} + e^{-\sqrt{\mu}k(z+2)} \right) e^{i\big( kx - \omega(k)t \big)}
-\end{equation}
+\end{equation*}
 
 We may use the superposition principle to assess the solution $\phi(x,z,t)$:
 \begin{equation}
@@ -286,20 +365,20 @@ We need to impose another initial condition, $\phi(x,0,0) = K(x)$ which, when in
 
 By adjusting the constants $A_n$ we can reduce $X(x)$ from a complex exponential to a sine function when the boundary conditions are imposed. The initial condition is chosen to be a harmonic function, $G(x) = \sin \left(\frac{\pi n}{L}x \right)$. We can now solve \ref{eqana:superduperposition} wrt $A_n$:
 
-\begin{equation}
+\begin{equation*}
 \sum_{n=0}^{\infty} A_n \left( e^{\sqrt{\mu}\frac{2 \pi n}{L}} + 1 \right) \sin \left(\frac{\pi n}{L}x \right) = \sin \left( \frac{\pi }{L}x \right)
-\end{equation}
+\end{equation*}
 
 giving a non-zero result only for $n=1$
-\begin{equation}
+\begin{equation*}
 A_1 = \frac{e^{- \sqrt{\mu}2\pi  /L } }{1 + e^{- \sqrt{\mu} 2\pi /L}}.
-\end{equation}
+\end{equation*}
 
 
 Now we can insert this into equation \ref{eqana:superposition} for the final result:
-\begin{equation}
+\begin{equation*}
 \phi(x,z,t) = \frac{ e^{ \sqrt{\mu} \frac{\pi }{L}z}  + e^{ -\sqrt{\mu}\frac{\pi }{L}(z+2)    }}{1 + e^{-2\sqrt{\mu}\frac{\pi }{L} }} e^{i \left( \frac{\pi }{L}x - \frac{\pi }{L\sqrt{\mu}} \tanh (\sqrt{\mu}\frac{\pi }{L})t \right)}
-\end{equation}
+\end{equation*}
 
 
 %\begin{figure}
@@ -323,9 +402,9 @@ Now we can insert this into equation \ref{eqana:superposition} for the final res
 
 
 If we instead of an imaginary exponential use the equivalent sine representation (which we get by only considering the imaginary part of $\phi(x,z,t)$), the equation \ref{eqana:superposition} is expressed as:
-\begin{equation}
+\begin{equation*}
 \sum_{n=0}^\infty Z_n \sin \left(  kx-\omega(k)t  \right).
-\end{equation}
+\end{equation*}
 
 We need initial condition $\phi(x,0,0) = G(x)$, which will be expressed as
 
@@ -336,23 +415,16 @@ We need initial condition $\phi(x,0,0) = G(x)$, which will be expressed as
 
 We must choose the coefficients, $A_n$ so that \ref{eqana:fouriersine} reduces to the fourier sine series of $G(x)$,
 
-\begin{equation}
+\begin{equation*}
 A_n = \frac{2}{L} \int_0^L G(x) \sin \frac{n \pi x}{L} d x
-\end{equation}
+\end{equation*}
 %
 %    Inundation
 %
-% Inundation - derivation of shallow water eq
-
-
 \section{Inundation}
-
 %
-
 %    Derivation of the shallow water equations
-
 %
-
 \subsection{Derivation of the shallow water equations}
 When the wave approaches the shore, the water depth becomes small. We now want to show that when the water depth is much smaller than the typical wavelength, we can estimate the situation by the following equations 
 \begin{align}
@@ -368,7 +440,7 @@ In this section we assume the reader is familiar with scaling of variables and w
 with respect to $x$. We use scales $T$ for time, $\Phi$ for $\phi$, $X$ for the $x$-direction and $Z$ for the $z$-direction. For $\eta$ we scale with $E$ and for $h$ we scale with $H$. We assume the solution is
 invariant in the $y$-direction and use that $\phi_x=u$. Then we get 
 \begin{equation*}
-    \frac{\Phi}{T}\frac{\partial u}{\partial t} + \frac{\Phi^2}{2X^2}\frac{\partial (u^2)}{\partial x}+ \frac{\Phi^2}{2Z^2}\frac{\partial(\phi_z^2)}{\partial x} + g\frac{E \partial \eta}{\partial x} = 0,
+\frac{\Phi}{T}\frac{\partial u}{\partial t} + \frac{\Phi^2}{2X^2}\frac{\partial (u^2)}{\partial x}+ \frac{\Phi^2}{2Z^2}\frac{\partial(\phi_z^2)}{\partial x} + g\frac{E \partial \eta}{\partial x} = 0,
 \end{equation*}
 where $\partial\phi_z^2/\partial x=0$. We multiply by $T$ and divide by $\Phi$ and collect the derivatives with respect to $x$,
 \begin{equation}
@@ -376,9 +448,7 @@ where $\partial\phi_z^2/\partial x=0$. We multiply by $T$ and divide by $\Phi$ a
     u_t + \left(\frac{T\Phi}{2X^2}u^2 + \frac{gTE}{\Phi}\eta\right)_x = 0.
 \end{equation}
 From \eqref{shallow2-ferdig} we see that $E = \frac{\Phi}{T g}$ and $\varepsilon =\frac{\Phi T}{X^2}$, and we have derived the first equation in \eqref{eq:shallow} for scaled variables.
-%
-%    Transforming the Shallow Water Equations
-%
+
 Next we want to derive the second equation of \eqref{eq:shallow}. To do this, we start with \eqref{eq:etaEq} in $z = \eta$. When scaled this is 
 \begin{equation}
     \label{eta_t..}
@@ -393,21 +463,23 @@ We also use from \eqref{eq:phit} that in $z = -h$ we can use $\phi_z = -\phi_x\f
     \frac{1}{Z}\phi_z = - \frac{H}{X^2}\phi_x h_x - \frac{1}{X^2}\phi_{xx}(E\eta + Hh).
 \end{equation*}
 We insert this into \eqref{eta_t..} and get
-\begin{equation} 
+\begin{equation*} 
     \eta_t + \frac{\Phi T}{X^2}\phi_x\eta_x + \frac{T\Phi H}{EX^2}\phi_x h_x + \frac{T\Phi}{X^2}\phi_{xx}(\eta + h\frac{H}{E}) = 0.
-\end{equation}
+\end{equation*}
 If we let $\varepsilon = \Phi T/X^2 $ as earlier and also let $\varepsilon = E/H$, then we get
 \begin{equation*}
     \eta_t + (u\varepsilon(\eta + h))_x = 0,
 \end{equation*}
 for the scaled variables, which is what we wanted to show. $\varepsilon$ turns out to be the scale of $\eta$ over the scale of $h$.
-
+%
+%    Transforming the Shallow Water Equations
+%
 \subsection{Transforming the Shallow Water Equations}
 We now want to decouple the \emph{variables} of the shallow water equations \ref{eq:shallow}. To this end, 
 assume that the bottom has a constant slope, $h_x = a$ (note: we allow $a$ = 0). Further set $\epsilon =1$,
 and let $\eta$ be the total wave height, that is $\eta = \epsilon\eta + h$ from Equation \eqref{eq:shallow}.
 Then the shallow water equations can then be written in matrix form as
-\begin{equation}
+\begin{equation*}
 \begin{bmatrix}
 	\eta \\
 	u
@@ -426,14 +498,14 @@ u
 0\\
 a
 \end{bmatrix}
-\end{equation}
+\end{equation*}
 The matrix has eigenvalues $\lambda_1 = u + \sqrt{\eta}$ and $\lambda_2 = u - \sqrt{\eta}$, with eigenvectors $v_1 = (1,1/\sqrt{\eta})^T$ and $v_2 = (1, {-}1\sqrt{\eta})^T$ respectively. This gives the two Riemann invariants
-\begin{align}
+\begin{align*}
 	\begin{aligned}
 		V &= u + \int \frac{1}{\sqrt{\eta}} = u + 2\sqrt{\eta}\\
 		W &= u - \int \frac{1}{\sqrt{\eta}} = u - 2\sqrt{\eta}.
 	\end{aligned}
-\end{align}
+\end{align*}
 This gives us
 \begin{align}
 \begin{aligned}
@@ -450,6 +522,40 @@ and
 		& = u_t + \left(\frac{1}{2}u^2 + \eta\right)_x - \frac{1}{\sqrt \eta}(\eta_t + (u\eta)_x) = a.
 	\end{aligned}
 \end{align}
+%
+% Generation of the wave
+%
+\section{Generation of the wave}
+The wave is generated by a rock falling into the water. We want to find the total energy of the rock with mass $m$ and velocity $v_R$ at height $z$. It is assumed that the rock is
+perfectly shaped as a rectangular box or cuboid that has height = 750 m and  width = breadth $\approx 268$ m for every cross-section of the rock in the $xy$-plane. This cross-section area
+is estimated to be  $A=72000$ m$^2$ and the volume is $V= 54 \cdot 10^6$ m$^3$. We assume the density of the rock to be the same as the density of concrete, that is $\rho_{R}=2400$ kg$/$m$^3$.
+We also assume the rock falls 150 m before landing in water.
+
+\subsection{Kinetic energy of rock at impact}
+First, we assume that the rock falls down a steep slope of the mountain with loose pebbels underneath working as a conveyor belt. This makes an assumption of zero friction and free fall reasonable.
+Then the speed of the rock as it reaches the water will be $v_{R,1}=55$ m/s from $mgh=\frac{1}{2}mv_R^2$. However it is more likely that the rock slides down an inclined plane with friction.
+We assume that this plane is angled by $\theta=45^{\circ}$  and the friction coefficient is $\gamma=0.6$, which makes the acceleration $a=g(\sin(\theta) - \gamma cos(\theta)) \approx 2.83$ m/s$^2$.
+The length of the inclined plane is $s=212$ m. Thus the velocity of the rock as it reaches water will now be estimated to be $v_{R,2}=\sqrt{2as} \approx 34.6$ m/s.
+Using $E =\frac{1}{2}m v_R^2$ for $v_{R,1}$ and $v_{R,2}$, we get a lower and upper estimate for the kinetic energy of the rock as it reaches water, $E_{upper} \approx 2 \cdot 10^{14}$ J and $E_{lower} \approx 7.8 \cdot 10^{13}$ J.
+
+\subsection{Terminal velocity of the rock}
+The rock may reach a constant velocity $v_{\infty}$. The rock achieves constant velocity when the sum of the forces acting upon it equals zero. Solving Newton's second law in equilibrium state for
+$v_{\infty}$ in presence of buoyancy force, gravity force and drag we get the equation
+\begin{align}
+    \label{terminal-lign}
+    F_g=F_b + D,
+\end{align}
+where $F_g=V\rho_{R}g$, $F_b= V \rho_{w}g$ and $D=\frac{1}{2}C_d\rho_{w}Av^2$. $C_d$ is the drag coefficient of the rock which for our assumed shape of the rock is $C_d=1.00$ for a smooth rock.
+Solving \eqref{terminal-lign} for $v$, we find that $v_{\infty} = 145$ m/s. 
+
+\subsection{Kinetic energy transferred to the wave}
+Lastly, we try to estimate the kinetic energy that can be transferred to water. An upper estimate for energy transferred to water is all the energy. This may not be realistic as the rock does not
+come to a complete stop when it hits the water. Some energy goes into noise, heat and motion that do not directly add up to the wave. Therefore, we make an upper estimate of 50\% of the energy going into the wave.
+It is difficult to give a lower bound, however we assume a lower bound to be 1\%. Using this information the upper and lower estimated energy going to the wave is $E_{lower}=7.8 \cdot 10^{11}$ J and $E_{upper}=10^{14}$ J.
+
+If the speed of the rock as it reaches water is close to the terminal speed, and the height of the mountain is sufficiently small it would be reasonable to additionally try to model the wave from the flux of water
+that the rock pushes out underneath itself instead of only the energy from the crash. Also the potential energy of the rock from the surface of the fjord to the bottom is assumed to not add up to the energy of the wave
+as water has high heat capacity and the speed of the rock is increasing. 
 
 \section{sometitle}
 
@@ -465,9 +571,9 @@ W_t + \lambda_2 W_x = a
 
 We have observed $W_x(0,x) = 0$. If we differentiate $\omega = W_x$ wrt $x$, then
 
-\begin{equation}
+\begin{equation*}
 \frac{d \omega}{d x} = \omega_t + \left( \lambda_2 \omega_x \right) = 0
-\end{equation}
+\end{equation*}
 
 The means that $\omega = const$ and using the initial condition $W_x(0,x) = 0$ we get $\omega(t,x) = W_x(t,x) = 0$.
 
@@ -495,27 +601,27 @@ We know that $V = u + 2 \sqrt{\eta}$, $W = u - 2 \sqrt{\eta}$ and $\lambda_1 = u
 \end{equation}
 
 Since $W_x = 0$ we know that $a = W_t$, which makes us able to use identity \ref{eqana:id1} and \ref{eqana:id2} in equation \ref{eqana:shallow1}.
-\begin{equation}
+\begin{equation*}
 \left( \frac{V_t - W_t}{4} \right)_x + \lambda_1 \left( \frac{V_x - W_x}{4} \right) = 0
-\end{equation}
+\end{equation*}
 
 which is equivalent with
-\begin{equation}
+\begin{equation*}
 u_t + \lambda_1 u_x = a.
-\end{equation}
+\end{equation*}
 
 Identity \ref{eqana:id3} and \ref{eqana:id4} gives us an expression for $\lambda$ and a reduction of a system of two equations into a scalar equation:
-\begin{equation}
+\begin{equation*}
 u_t + \left(\frac{3}{2}u - \frac{a}{2}t + c\right) u_x = a.
-\end{equation}
+\end{equation*}
 
 $c$ is a constant equal to the initial condition $u_0$.
 
 \subsection{Solving the shallow water equations}
 Using the method of characteristics we get 
-\begin{equation}
+\begin{equation*}
 \frac{d u}{dt} = u_t + \left(\frac{3}{2}u - \frac{a}{2}t + u(0) \right) u_x = a.
-\end{equation}
+\end{equation*}
 
 This gives us that $u = at + C(x)$ as well as a formula for $\frac{d x}{d t}$, namely
 
@@ -536,7 +642,7 @@ Based preceding, we now present three different numerical schemes for solving th
 %
 \subsection{Mimectic finite differences/forward difference scheme}
 
-The idea is as follows: We will use Mimetic Finite Differences (MFD) \cite{} to solve the first equation of \eqref{eq:IncompNavierStokes}, assuming we initially know
+The idea is as follows: We will use Mimetic Finite Differences (MFD) \cite{raynaud15} to solve the first equation of \eqref{eq:IncompNavierStokes}, assuming we initially know
 $\phi$ at the top, along with $\eta$. Next, we use this solution in a forward-difference scheme to obtain the next $\eta$, and $\phi$. This will give a Mimetic finite
 difference/forward difference scheme, abbreviated M(FD)$^2$S.
 
@@ -552,8 +658,10 @@ to a variable $\xi$ as $g_\xi(x_i, t_n) = g_{\xi}|_i^n$, and $\bm{g}_\xi^n = \Bi
 To approximate the derivative of a function $g$ with respect to $t$, we use Taylors formula to obtain forward differences:
 \begin{align}
     \label{eq:ForwardDiff}
-    g(x_i, t_{n+1})       & = g(x_i, t_n) +  (t_{n+1}-t_n)g_t(x_i, t_n) + \mathcal{O}\big((t_{n+1}-t_n)^2\big) \\
-    \Rightarrow g_t|_i^n & = \frac{g_i^{n+1}-g_i^n}{k} + \mathcal{O}(k).
+    \begin{aligned}
+	    g(x_i, t_{n+1})       & = g(x_i, t_n) +  (t_{n+1}-t_n)g_t(x_i, t_n) + \mathcal{O}\big((t_{n+1}-t_n)^2\big) \\
+	    \Rightarrow g_t|_i^n & = \frac{g_i^{n+1}-g_i^n}{k} + \mathcal{O}(k).
+	\end{aligned}
 \end{align}
 
 To approximate its derivative with respect to $x$, we use central differences:
@@ -726,32 +834,7 @@ The resulting run-up was XX. A video of the simulation can be found in \cite{}.
 Even though we have made several assumptions throughout this study, especially for the energy in the wave (+ andre ting?), we have been able to give good estimates of the creation,
 propagation and run-up of the wave. The estimated time for the wave to reach  the populated area is 3.5$-$4 minutes. We have also estimated that the wave will be around 20 m high when it reaches the populated area. 
 
-\clearpage
-\section*{Appendix}
+\bibliographystyle{apa}
+\bibliography{refs}  
 
-\begin{figure}[!h]
-\centering
-\begin{subfigure}[b]{\textwidth}
-\includegraphics[width=\textwidth]{fig/3dv2_1.eps}
-\label{fig1}
-\end{subfigure}
-\begin{subfigure}[b]{\textwidth}
-\includegraphics[width=\textwidth]{fig/3dv2_2.eps}
-\label{fig1}
-\end{subfigure}
-\caption{Illustrating example of a 3D wave.}
-\end{figure}
-\clearpage
-\begin{figure}
-\begin{subfigure}[b]{\textwidth}
-\includegraphics[width=\textwidth]{fig/3dv2_3.eps}
-\label{fig1}
-\end{subfigure}
-\begin{subfigure}[b]{\textwidth}
-\includegraphics[width=\textwidth]{fig/3dv2_5.eps}
-\label{fig1}
-\end{subfigure}
-\caption{Illustrating example of a 3D wave.}
-\label{fig:3dWave}
-\end{figure}
 \end{document}
