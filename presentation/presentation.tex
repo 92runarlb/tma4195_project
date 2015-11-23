@@ -73,17 +73,39 @@
     \end{block}
 \end{frame}
 
-\section*{Analysis}
+\section*{Numerical Solutions of the Shallow Water Equation}
+
 \begin{frame}
-    kk
+	\frametitle{Numerical Solutions of the Shallow Water Equation}
+	\begin{block}{The System of Equations}
+		\begin{align*}
+		\begin{array}{c c}
+		V_t + (u+\sqrt{\eta})V_x = 0, & V = u + 2 \sqrt \eta\\
+		U_t + (u-\sqrt{\eta})U_x = 0, & U = u - 2\sqrt \eta
+		\end{array}
+		\end{align*}
+	\end{block}
 \end{frame}
-
-\section*{Numerical experiments}
-
 \begin{frame}
-    \frametitle{M(FD)$^2$S (Mimetic finite differences/forward difference) scheme}
-    \pause
-    
+	\frametitle{Numerical Scheme}
+	\only<1-1>{
+	\begin{figure}[b]
+		\centering
+		\includegraphics[width=0.7\textwidth]{fig/charWaveEq1stStep.eps}
+	\end{figure}
+	}
+	\only<2-2>{
+		\begin{figure}[b]
+			\centering
+			\includegraphics[width=0.7\textwidth]{fig/charWaveEq2ndStep.eps}
+		\end{figure}
+	}
+	\only<3-3>{
+		\begin{figure}[b]
+			\centering
+			\includegraphics[width=0.7\textwidth]{fig/charWaveEq3rdStep.eps}
+		\end{figure}
+	}
 \end{frame}
 
 \end{document}
