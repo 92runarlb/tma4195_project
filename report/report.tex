@@ -1,4 +1,4 @@
-\documentclass[12pt]{article}
+\documentclass[11pt]{article}
 \usepackage{style}
 
 
@@ -11,35 +11,27 @@
 TMA4195 \\ \vspace{5pt}
 \hrule \vspace{10pt}
        {\Huge \textbf{Three Numerical Schemes for Simulating Waves}}
-\vspace{10pt}\hrule
+\vspace{10pt}\hrule\vspace{1cm}
 }
 \begin{document}
 \maketitle
+\vspace{1cm}
+\hrule
+\vspace{0.5cm}
+\begin{abstract}
+	In this project we model a tsunami from a landslide at Åkerneset into Geirangerfjorden. Our main goal is to estimate the size of the tsunami
+	wave and the time it takes to reach the populated area Hellesylt. The development of the wave is studied in three phases; the creation of the wave,
+	the propagation and finally the run-up of the wave. \emph{Noen som kan skriver om de numeriske metodene.}
+	The main result of this project is that the wave uses about 3.5 minutes to reach Hellesylt and will be about 20 m high at this point. 
+\end{abstract}
 \clearpage
 %
 %    INTRODUCTION
 %
 \section{Introduction}
-
-Set problem in context.
-
-In this modelling project, we will address three major phases in the development of a tsunami:
-\begin{enumerate}[label = \emph{(\roman*)}]
-    \item    The creation of a tsunami wave, when the kinetic energy of a falling rock is transferred to the
-             water,
-    \item    The propagation of the wave in the parts of the fjord where the bottom as approximately constant
-             elevation,
-    \item    The run-up of the wave when it reaches the end of the fjord and the height of the wave starts
-             increasing at the same time that its speed decreases.
-\end{enumerate}
-
-In the case of a tsunami event close to a populated area, two questions are of particular interest:
-\begin{enumerate}[label = \emph{(\roman*)}]
-    \item    How long does it take for the wave to reach the populated area?
-    \item    What is the height of the wave when it reaches the shore?
-\end{enumerate}
-
-Add extra..
+In this project we will address the development of a tsunami wave in a fjord caused by a rock slide. We visualize the development as happening in three phases,
+the creation of the tsunami, the propagation of the wave and finally the run-up of the wave. We will give estimates for this by using methods from mathematical modeling,
+analysis and numerical analysis. We are particularly interested in the the time the wave uses to the populated areas and the height as it reaches these areas.
 
 \section{Governing Equations}
 
@@ -209,145 +201,14 @@ Furthermore inserting $z = \eta(x,y)$ into \eqref{eq:IncompNavierStokes} and usi
     \frac{\partial \phi }{\partial t} + \frac{1}{2}|\nabla \phi |^2 + g\eta = 0.
 \end{equation}
 %
-%    Numerical Simulation of Navier Stokes
-%
-\section{Numerical simulation of Navier Stokes}
-We will use Mimetic Finite Differences (MFD) to solve the first equation of \eqref{eq:IncompNavierStokes}, see \cite{somRef} for details.
-
-In order to obtain a discrete formulation of \eqref{eq:IncompNavierStokes}, we introduce the following notation:
-
-We assume the whole domain $\Omega$ is discretized into a union $\mathcal{T}_h$ of $N^x \times N^y$ adjecent, non-overlapping
-polygons with four edges. Further, we consider the top faces, at $z = \eta$, numbered from $1$ (left) to $N^x$ (right), and denote
-the centroid of face $i$ by $x_i$, so that $x_1 < x_2 < \dots < x_{N^x}$. We denote the distance between each centroid by
-$h_i := x_{i+1}-x_i$. Morover, we disctretize time interval $[0, T]$ as $0 = t_0 < t_1 < \cdots < t_{N^t}$, where $t_{n+1}-t_n := k$ for all $n$.
-For a function $g(x,t)$, we can now denote $g(x_i, t_n) = g_i^n$, and $\bm{g}^n = \Big(g_1^n, \dots, g_{N^x}^n\Big)^\top$, and its derivative with respect
-to a variable $\xi$ as $g_\xi(x_i, t_n) = g_{\xi}|_i^n$, and $\bm{g}_\xi^n = \Big(g_{\xi}|_1^n, \dots, g_{\xi}|_M^n\Big)^\top$.
-
-To approximate the derivative of a function $g$ with respect to $t$, we use Taylors formula to obtain forward differences:
-\begin{align}
-    \label{eq:ForwardDiff}
-    g(x_i, t_{n+1})       & = g(x_i, t_n) +  (t_{n+1}-t_n)g_t(x_i, t_n) + \mathcal{O}\big((t_{n+1}-t_n)^2\big) \\
-    \Rightarrow g_t|_i^n & = \frac{g_i^{n+1}-g_i^n}{k} + \mathcal{O}(k).
-\end{align}
-
-To approximate its derivative with respect to $x$, we use central differences:
-\begin{align*}
-    g(x_{i+1}, t_n)       & = g(x_i, t_n) +  (x_{i+1}-x_i)g_x(x_i, t_n) + \mathcal{O}\big((x_{i+1}-x_i)^2\big) \\
-    g(x_{i-1}, t_n)       & = g(x_i, t_n) +  (x_{i-1}-x_i)g_x(x_i, t_n) + \mathcal{O}\big((x_{i-1}-x_i)^2\big) \\    
-    \Rightarrow g_x|_i^n & = \frac{g_{i+1}^n-g_{i-1}^n}{h_i + h_{i-1}} + \mathcal{O}(h_i) + \mathcal{O}(h_{i-1}).
-\end{align*}
-At the end points, we need to approximate the derivatives by forward differences. In particular, following \eqref{eq:ForwardDiff}, 
-we obtain
-\begin{align*}
-    g_x|_1^n = \frac{g_2^n -g_1^n}{h_1} + \mathcal{O}(h_1), \quad g_x|_{N^x}^n = \frac{g_{N^x}^n -g_{N^x-1}^n}{h_{N^x-1}} + \mathcal{O}(h_{N^x-1}).
-\end{align*}
-
-We now make the following sin: We assume that $\nabla \phi$ changes sufficiently slow with each time step $k$, such that we can use $\nabla \phi^n$
-in place of of $\nabla \phi^{n+1}$. Hence, we can formulate \eqref{eq:etaEq} as
-\begin{align*}
-    \frac{\eta_i^{n+1} - \eta_i^n}{k} + \phi_x|_i^{n} \frac{\eta_{i+1}^{n+1}-\eta_{i-1}^{n+1}}{h_i + h_{i-1}} - \phi_z|_i^n
-                       = \mathcal{O}(k) + \mathcal{O}(h_i) + \mathcal{O}(h_{i-1}) \xrightarrow{N^t, N^x \rightarrow \infty} 0,
-\end{align*}
-which yields the matrix system
-\begin{align}
-    \label{eq:etan+1}
-    \bm{A} \bm{\eta}^{n+1} = \frac{1}{k}\bm{\eta}^n + \bm{\phi}_z^n,
-\end{align}
-where $\bm{A}$ is a tridiagonal matrix with the following diagonals:
-\begin{align*}
-    \text{Super diagonal: } &\frac{1}{2} \bigg(\frac{\phi_x|_2^{n}}{h_2 + h_1}, \frac{\phi_x|_3^{n}}{h_3+h_2},
-                                        \dots, \frac{\phi_x|_{N^x-1}^n}{h_{N^x-1} + h_{N^x-2}}, 2\frac{\phi_x|_{N^x}^n}{h_{N^x-1}}\bigg) \\
-    \text{Main diagonal: }  &\frac{1}{k}  \Big(1, \dots, 1\Big)                                        \\
-    \text{Sub diagonal: }  -&\frac{1}{2} \bigg(2\frac{\phi_x|_1^{n}}{h_1}, \frac{\phi_x|_2^{n}}{h_2+h_1}, \frac{\phi_x|_3^n}{h_3 + h_2},
-                                        \dots, \frac{\phi_x|_{N^x-1}^n}{h_{N^x-1} + h_{N^x-2}}\bigg) \\
-\end{align*}
-%Further, $\bm{\eta}^{n} = \Big(\eta_1^n, \dots, \eta_M^n\Big)^\top$, and $\bm{\phi}_z^n = \Big((\phi_z)_1^n, \dots, (\phi_z)_M^n\Big)^\top$.
-%
-Following the same procedure as for \eqref{eq:ForwardDiff}, we the discretized version of \eqref{eq:phiEq}:
-\begin{align*}
-    \frac{\phi_i^{n+1}-\phi_i^n}{k} + \frac{1}{2}|\nabla \phi_i^n|^2 + g \eta_i^{n+1} = 0,
-\end{align*}
-which can be written in matrix form as
-\begin{align}
-    \label{eq:phin+1}
-    \bm{\phi}^{n+1} = \bm{\phi}^n - k\bigg(\frac{1}{2}\bm{\xi}^n + g \bm{\eta}^{n+1}\bigg),
-\end{align}
-where $\bm{\xi}^n = \Big(|\nabla \phi_1^n|^2, \dots,  |\nabla \phi_M^n|^2\bigg)^\top$.
-
-We note that we will need $\nabla \phi$ on each top face. To this end, we note that MFD gives us the fluxes on each half-face, $v_{f} \approx \int_{f} \nabla \phi \cdot n_{f} \, \d s$.
-Moreover, we know that any vector $\bm{v} \in \mathbb{R}^2$ can be written as $(\bm{v}\cdot\bm{n}_1) \bm{n}_1 + (\bm{v}\cdot\bm{n}_2) \bm{n}_2$,
-where $\bm{n}_1$ and $\bm{n}_2$ are two orthogonal vectors of unit length.
-Hence, in order to approximate $\nabla \phi$ on a top half-face $f_t$, we choose the corresponding right and left half-faces $f_r$ and $f_l$ sharing the same cell.
-If we are not altering the grid in the $x$-direction, we can then approximate $\nabla \phi|_{f_t}$ as
-\begin{align*}
-    \nabla \phi|_{f_t} \approx |f_t|^{-1} v_{f_t} \bm{n}_{f_t} + \frac{1}{2}(|f_l|^{-1}v_{f_l}-|f_r|^{-1}v_{f_r})\bm{n}_{f_r}.
-\end{align*}
-
-We then choose $\nabla \phi|_{f_t}$ to be our approximation of $\nabla \phi$ at the centroid of $f_t$.
-
-A natural next step is now to implement the same procedure in three dimensions. To simplify the discretization, we first calculate
-the gradient of $\eta$ numerically, and then solve for $\eta^{n+1}$ explicitly. In matrix notation, we have
-\begin{align}
-    \label{eq:etan+13d}
-    \bm{\eta}^{n+1} = \bm{\eta}^n - k \big(\bm{\phi}_x^n, \bm{\phi}_y^n, \bm{\phi}_z^n\big)\cdot(\bm{\eta}_x^n, \bm{\eta}_y^n, -\bm{1}\big),
-\end{align}
-where the dot product matrices is understood to be the dot product of the rows forming each matrix.
-
-We denote the domain $\Omega^n := \Omega(t_n)$, and define $\mathcal{T}_h^n$ to be the discretization of $\Omega^n$
-at a time $t_n$. Moreover, we denote the discrete solution $\phi$ on $\mathcal{T}_h^n$ at time $t_n$ by $\bm{\Phi}^n$.
-
-We can now state an algorithm for solving the system \eqref{eq:IncompNavierStokes}. It is given in Algorithm \ref{alg:IncomNavierStokes}.
-%
-%    Algorithm
-%
-\begin{algorithm}
-    \caption{Incomressible Navier Stokes equations}
-    \begin{algorithmic}[1]
-    \State    \textbf{Input:} $\bm{\eta}^0$, $\bm{\phi}^0$, $\eta^0$, $\mathcal{T}_h^0$.
-        \For    {$n \leftarrow 0,N^t$}
-	    \State    Change $\mathcal{T}_h^n$ according to $\bm{\eta}^n$.
-            \State    Solve the first equation of \eqref{eq:IncompNavierStokes} with $f = \bm{\phi}^n$ to obtain
-                      $\bm{\Phi}^{n}$, $\bm{\phi}_x^n$ and $\bm{\phi}_z^n$ using MFD.
-			\If {Two dimensions}
-                \State    Calculate $\bm{\eta}^{n+1}$ from \eqref{eq:etan+1}
-			\ElsIf {Three dimensions}
-			    \State    Calculate $\bm{\eta}^{n+1}$ from \eqref{eq:etan+13d}
-			\EndIf
-        \State    Calculate $\bm{\phi}^{n+1}$ from \eqref{eq:phin+1}
-        \EndFor
-	\end{algorithmic}
-	\label{alg:IncomNavierStokes}
-\end{algorithm}
-
-Two illustrating examples are shown in in Figure \ref{fig:2dWave} and Figure \ref{fig:3dWave}. In two dimensions, the seabed is ascending
-from the left to the right VIDEOREFERENCES. We can see that the wave is building up as it reaches the shallow end. In three dimensions,
-the seabed is flat.
-
-\begin{figure}[!h]
-\centering
-\begin{subfigure}[b]{0.24\textwidth}
-\includegraphics[width=\textwidth]{fig/2dLin1.eps}
-\label{fig1}
-\end{subfigure}
-\begin{subfigure}[b]{0.24\textwidth}
-\includegraphics[width=\textwidth]{fig/2dLin2.eps}
-\label{fig1}
-\end{subfigure}
-\begin{subfigure}[b]{0.24\textwidth}
-\includegraphics[width=\textwidth]{fig/2dLin3.eps}
-\label{fig1}
-\end{subfigure}
-\begin{subfigure}[b]{0.24\textwidth}
-\includegraphics[width=\textwidth]{fig/2dLin4.eps}
-\label{fig1}
-\end{subfigure}
-\caption{Illustrating example of a 2D wave (blue) with varying seabed (red) building up as it reaches the shallow end.}
-\label{fig:2dWave}
-\end{figure}
-%
 %    Reduction of a linear model
 %
-\section{Reduction of a linear model}
+
+
+%HER KOMMER FØRSTE ANALYSEDEL!!!
+%
+%
+\section{Reduction of a linear model} 
 We are asked to compute the solutions to the following problem:
 \begin{equation}
 \mu \phi _{xx} + \phi_{zz} = 0
@@ -412,15 +273,86 @@ We now have an expression for each solution $\phi_k(x,z,t)$,
 
 We may use the superposition principle to assess the solution $\phi(x,z,t)$:
 \begin{equation}
-\sum_{k=0}^{\infty} Z_k e^{i\big(kx - \omega(k) t \big)}
+\label{eqana:superposition}
+\phi(x,z,t) = \sum_{k=0}^{\infty} Z_k e^{i\big(kx - \omega(k) t \big)}
+\end{equation}
+
+We need to impose another initial condition, $\phi(x,0,0) = K(x)$ which, when inserted into \ref{eqana:superposition} becomes
+
+\begin{equation}
+\phi_n(x,0,0) = \sum_{n=0}^{\infty} A_n \left( e^{\sqrt{\mu}\frac{2 \pi n}{L}} + 1 \right) e^{ i \big( \frac{\pi n}{L}x \big) } = G(x)
+\label{eqana:superduperposition}
+\end{equation}
+
+By adjusting the constants $A_n$ we can reduce $X(x)$ from a complex exponential to a sine function when the boundary conditions are imposed. The initial condition is chosen to be a harmonic function, $G(x) = \sin \left(\frac{\pi n}{L}x \right)$. We can now solve \ref{eqana:superduperposition} wrt $A_n$:
+
+\begin{equation}
+\sum_{n=0}^{\infty} A_n \left( e^{\sqrt{\mu}\frac{2 \pi n}{L}} + 1 \right) \sin \left(\frac{\pi n}{L}x \right) = \sin \left( \frac{\pi }{L}x \right)
+\end{equation}
+
+giving a non-zero result only for $n=1$
+\begin{equation}
+A_1 = \frac{e^{- \sqrt{\mu}2\pi  /L } }{1 + e^{- \sqrt{\mu} 2\pi /L}}.
+\end{equation}
+
+
+Now we can insert this into equation \ref{eqana:superposition} for the final result:
+\begin{equation}
+\phi(x,z,t) = \frac{ e^{ \sqrt{\mu} \frac{\pi }{L}z}  + e^{ -\sqrt{\mu}\frac{\pi }{L}(z+2)    }}{1 + e^{-2\sqrt{\mu}\frac{\pi }{L} }} e^{i \left( \frac{\pi }{L}x - \frac{\pi }{L\sqrt{\mu}} \tanh (\sqrt{\mu}\frac{\pi }{L})t \right)}
+\end{equation}
+
+
+%\begin{figure}
+%    \centering
+%    \begin{subfigure}[b]{0.48\textwidth}
+%        \includegraphics[width=\textwidth]{matlabcropped.pdf}
+%        \vspace{-20pt}
+%        \caption{Wave plot}
+%        \label{figana:wave}
+%    \end{subfigure}
+%    ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc. 
+%      %(or a blank line to force the subfigure onto a new line)
+%    \begin{subfigure}[b]{0.48\textwidth}
+%        \includegraphics[width=\textwidth]{gradientcropped.pdf}
+%        \vspace{-20pt}
+%        \caption{Gradient plot}
+%        \label{figana:gradient}
+%    \end{subfigure}
+%    \caption{Resulting plots at $t=0$.}\label{figana:plots}
+%\end{figure}
+
+
+If we instead of an imaginary exponential use the equivalent sine representation (which we get by only considering the imaginary part of $\phi(x,z,t)$), the equation \ref{eqana:superposition} is expressed as:
+\begin{equation}
+\sum_{n=0}^\infty Z_n \sin \left(  kx-\omega(k)t  \right).
+\end{equation}
+
+We need initial condition $\phi(x,0,0) = G(x)$, which will be expressed as
+
+\begin{equation}
+\label{eqana:fouriersine}
+\phi(x,0,0) = \sum_{n=1}^\infty A_n \left( 1 + e^{-2\sqrt{\mu}\pi/L} \right) \sin \left( \frac{\pi n}{L}x \right)
+\end{equation}
+
+We must choose the coefficients, $A_n$ so that \ref{eqana:fouriersine} reduces to the fourier sine series of $G(x)$,
+
+\begin{equation}
+A_n = \frac{2}{L} \int_0^L G(x) \sin \frac{n \pi x}{L} d x
 \end{equation}
 %
 %    Inundation
 %
+% Inundation - derivation of shallow water eq
+
+
 \section{Inundation}
+
 %
+
 %    Derivation of the shallow water equations
+
 %
+
 \subsection{Derivation of the shallow water equations}
 When the wave approaches the shore, the water depth becomes small. We now want to show that when the water depth is much smaller than the typical wavelength, we can estimate the situation by the following equations 
 \begin{align}
@@ -430,13 +362,13 @@ When the wave approaches the shore, the water depth becomes small. We now want t
 	    \eta_t + (u(\varepsilon\eta + h))_x & = 0
 	\end{cases},
 \end{align}
-where $u = \phi_x$. \\
-\\
+where $u = \phi_x$. 
+
 In this section we assume the reader is familiar with scaling of variables and will not explain how this is done. To find the first equation in \eqref{eq:shallow} we consider \eqref{eq:phiEq} and take the partial derivative
 with respect to $x$. We use scales $T$ for time, $\Phi$ for $\phi$, $X$ for the $x$-direction and $Z$ for the $z$-direction. For $\eta$ we scale with $E$ and for $h$ we scale with $H$. We assume the solution is
 invariant in the $y$-direction and use that $\phi_x=u$. Then we get 
 \begin{equation*}
-\frac{\Phi}{T}\frac{\partial u}{\partial t} + \frac{\Phi^2}{2X^2}\frac{\partial (u^2)}{\partial x}+ \frac{\Phi^2}{2Z^2}\frac{\partial(\phi_z^2)}{\partial x} + g\frac{E \partial \eta}{\partial x} = 0,
+    \frac{\Phi}{T}\frac{\partial u}{\partial t} + \frac{\Phi^2}{2X^2}\frac{\partial (u^2)}{\partial x}+ \frac{\Phi^2}{2Z^2}\frac{\partial(\phi_z^2)}{\partial x} + g\frac{E \partial \eta}{\partial x} = 0,
 \end{equation*}
 where $\partial\phi_z^2/\partial x=0$. We multiply by $T$ and divide by $\Phi$ and collect the derivatives with respect to $x$,
 \begin{equation}
@@ -447,9 +379,7 @@ From \eqref{shallow2-ferdig} we see that $E = \frac{\Phi}{T g}$ and $\varepsilon
 %
 %    Transforming the Shallow Water Equations
 %
-
-
-Next we want to derive the second equations of \eqref{eq:shallow}. To do this, we start with \eqref{eq:etaEq} in $z = \eta$. When scaled this is 
+Next we want to derive the second equation of \eqref{eq:shallow}. To do this, we start with \eqref{eq:etaEq} in $z = \eta$. When scaled this is 
 \begin{equation}
     \label{eta_t..}
     \eta_t + \frac{\Phi T}{X^2}\phi_x\eta_x - \frac{\Phi T}{ZE}\phi_z = 0,
@@ -468,7 +398,7 @@ We insert this into \eqref{eta_t..} and get
 \end{equation}
 If we let $\varepsilon = \Phi T/X^2 $ as earlier and also let $\varepsilon = E/H$, then we get
 \begin{equation*}
-    \eta_t + (u\epsilon(\eta + h))_x = 0,
+    \eta_t + (u\varepsilon(\eta + h))_x = 0,
 \end{equation*}
 for the scaled variables, which is what we wanted to show. $\varepsilon$ turns out to be the scale of $\eta$ over the scale of $h$.
 
@@ -520,12 +450,202 @@ and
 		& = u_t + \left(\frac{1}{2}u^2 + \eta\right)_x - \frac{1}{\sqrt \eta}(\eta_t + (u\eta)_x) = a.
 	\end{aligned}
 \end{align}
-%
-%    Solving the shallow water equations numerically
-%
-\subsection{Solving the shallow water equation numerically}
 
-\subsubsection{A method of characteristics}
+\section{sometitle}
+
+The shallow water equations are 
+\begin{equation}
+V_t + \lambda_1 V_x = a
+\label{eqana:shallow1}
+\end{equation}
+\begin{equation}
+W_t + \lambda_2 W_x = a
+\label{eqana:shallow2}
+\end{equation}
+
+We have observed $W_x(0,x) = 0$. If we differentiate $\omega = W_x$ wrt $x$, then
+
+\begin{equation}
+\frac{d \omega}{d x} = \omega_t + \left( \lambda_2 \omega_x \right) = 0
+\end{equation}
+
+The means that $\omega = const$ and using the initial condition $W_x(0,x) = 0$ we get $\omega(t,x) = W_x(t,x) = 0$.
+
+\subsection{Reduction of the shallow water equations}
+We know that $V = u + 2 \sqrt{\eta}$, $W = u - 2 \sqrt{\eta}$ and $\lambda_1 = u + \sqrt{\eta}$. We also need some identities listed below:
+
+\begin{equation}
+\left(\frac{V-W}{4}\right)_x = \frac{V_x}{4} = \left( \sqrt{\eta}\right)_x
+\label{eqana:id1}
+\end{equation}
+
+\begin{equation}
+\left(\frac{V-W}{4}\right)_t = \frac{V_t - a}{4} = \left( \sqrt{\eta}\right)_t
+\label{eqana:id2}
+\end{equation}
+
+\begin{equation}
+\left(\frac{V+W}{2}\right)_x = \frac{V_x}{2} = u_x = 2\left( \sqrt{\eta}\right)_x
+\label{eqana:id3}
+\end{equation}
+
+\begin{equation}
+\left(\frac{V+W}{2}\right)_t = \frac{V_t + a}{2} = u_t = 2\left( \sqrt{\eta}\right)_x + a
+\label{eqana:id4}
+\end{equation}
+
+Since $W_x = 0$ we know that $a = W_t$, which makes us able to use identity \ref{eqana:id1} and \ref{eqana:id2} in equation \ref{eqana:shallow1}.
+\begin{equation}
+\left( \frac{V_t - W_t}{4} \right)_x + \lambda_1 \left( \frac{V_x - W_x}{4} \right) = 0
+\end{equation}
+
+which is equivalent with
+\begin{equation}
+u_t + \lambda_1 u_x = a.
+\end{equation}
+
+Identity \ref{eqana:id3} and \ref{eqana:id4} gives us an expression for $\lambda$ and a reduction of a system of two equations into a scalar equation:
+\begin{equation}
+u_t + \left(\frac{3}{2}u - \frac{a}{2}t + c\right) u_x = a.
+\end{equation}
+
+$c$ is a constant equal to the initial condition $u_0$.
+
+\subsection{Solving the shallow water equations}
+Using the method of characteristics we get 
+\begin{equation}
+\frac{d u}{dt} = u_t + \left(\frac{3}{2}u - \frac{a}{2}t + u(0) \right) u_x = a.
+\end{equation}
+
+This gives us that $u = at + C(x)$ as well as a formula for $\frac{d x}{d t}$, namely
+
+\begin{equation}
+\label{blablabla}
+\frac{d x}{d t} = \frac{3}{2}u - \frac{a}{2}t + u(0) = at + C(x).
+\end{equation}
+Solving \ref{blablabla} gives us that $x(t) = \frac{a}{2}t^2 + C(x) t + x_0$
+
+%
+%    Numerics
+%
+\section{Numerics}
+
+Based preceding, we now present three different numerical schemes for solving the Tsunami problem.
+%
+%    Mimectic finite differences/forward difference shceme
+%
+\subsection{Mimectic finite differences/forward difference scheme}
+
+The idea is as follows: We will use Mimetic Finite Differences (MFD) \cite{} to solve the first equation of \eqref{eq:IncompNavierStokes}, assuming we initially know
+$\phi$ at the top, along with $\eta$. Next, we use this solution in a forward-difference scheme to obtain the next $\eta$, and $\phi$. This will give a Mimetic finite
+difference/forward difference scheme, abbreviated M(FD)$^2$S.
+
+In order to obtain a discrete formulation of \eqref{eq:IncompNavierStokes}, we introduce the following notation:
+
+We assume the whole domain $\Omega$ is discretized into a union $\mathcal{T}_h$ of $N^x \times N^y$ adjecent, non-overlapping
+polygons with four edges. Further, we consider the top faces, at $z = \eta$, numbered from $1$ (left) to $N^x$ (right), and denote
+the centroid of face $i$ by $x_i$, so that $x_1 < x_2 < \dots < x_{N^x}$. We denote the distance between each centroid by
+$h_i := x_{i+1}-x_i$. Morover, we disctretize time interval $[0, T]$ as $0 = t_0 < t_1 < \cdots < t_{N^t}$, where $t_{n+1}-t_n := k$ for all $n$.
+For a function $g(x,t)$, we can now denote $g(x_i, t_n) = g_i^n$, and $\bm{g}^n = \Big(g_1^n, \dots, g_{N^x}^n\Big)^\top$, and its partial derivative with respect
+to a variable $\xi$ as $g_\xi(x_i, t_n) = g_{\xi}|_i^n$, and $\bm{g}_\xi^n = \Big(g_{\xi}|_1^n, \dots, g_{\xi}|_M^n\Big)^\top$.
+
+To approximate the derivative of a function $g$ with respect to $t$, we use Taylors formula to obtain forward differences:
+\begin{align}
+    \label{eq:ForwardDiff}
+    g(x_i, t_{n+1})       & = g(x_i, t_n) +  (t_{n+1}-t_n)g_t(x_i, t_n) + \mathcal{O}\big((t_{n+1}-t_n)^2\big) \\
+    \Rightarrow g_t|_i^n & = \frac{g_i^{n+1}-g_i^n}{k} + \mathcal{O}(k).
+\end{align}
+
+To approximate its derivative with respect to $x$, we use central differences:
+\begin{align*}
+    g(x_{i+1}, t_n)       & = g(x_i, t_n) +  (x_{i+1}-x_i)g_x(x_i, t_n) + \mathcal{O}\big((x_{i+1}-x_i)^2\big) \\
+    g(x_{i-1}, t_n)       & = g(x_i, t_n) +  (x_{i-1}-x_i)g_x(x_i, t_n) + \mathcal{O}\big((x_{i-1}-x_i)^2\big) \\    
+    \Rightarrow g_x|_i^n & = \frac{g_{i+1}^n-g_{i-1}^n}{h_i + h_{i-1}} + \mathcal{O}(h_i) + \mathcal{O}(h_{i-1}).
+\end{align*}
+At the end points, we need to approximate the derivatives by forward differences. In particular, following \eqref{eq:ForwardDiff}, 
+we obtain
+\begin{align*}
+    g_x|_1^n = \frac{g_2^n -g_1^n}{h_1} + \mathcal{O}(h_1), \quad g_x|_{N^x}^n = \frac{g_{N^x}^n -g_{N^x-1}^n}{h_{N^x-1}} + \mathcal{O}(h_{N^x-1}).
+\end{align*}
+
+We now make the following sin: We assume that $\nabla \phi$ changes sufficiently slow with each time step, such that we can use $\nabla \phi^n$
+in place of of $\nabla \phi^{n+1}$. Hence, we can formulate \eqref{eq:etaEq} as
+\begin{align*}
+    \frac{\eta_i^{n+1} - \eta_i^n}{k} + \phi_x|_i^{n} \frac{\eta_{i+1}^{n+1}-\eta_{i-1}^{n+1}}{h_i + h_{i-1}} - \phi_z|_i^n
+                       = \mathcal{O}(k) + \mathcal{O}(h_i) + \mathcal{O}(h_{i-1}) \xrightarrow{N^t, N^x \rightarrow \infty} 0,
+\end{align*}
+which yields the matrix system
+\begin{align}
+    \label{eq:etan+1}
+    \bm{A} \bm{\eta}^{n+1} = \frac{1}{k}\bm{\eta}^n + \bm{\phi}_z^n,
+\end{align}
+where $\bm{A}$ is a tridiagonal matrix with the following diagonals:
+\begin{align*}
+    \text{Super diagonal: } &\frac{1}{2} \bigg(\frac{\phi_x|_2^{n}}{h_2 + h_1}, \frac{\phi_x|_3^{n}}{h_3+h_2},
+                                        \dots, \frac{\phi_x|_{N^x-1}^n}{h_{N^x-1} + h_{N^x-2}}, 2\frac{\phi_x|_{N^x}^n}{h_{N^x-1}}\bigg) \\
+    \text{Main diagonal: }  &\frac{1}{k}  \Big(1, \dots, 1\Big)                                        \\
+    \text{Sub diagonal: }  -&\frac{1}{2} \bigg(2\frac{\phi_x|_1^{n}}{h_1}, \frac{\phi_x|_2^{n}}{h_2+h_1}, \frac{\phi_x|_3^n}{h_3 + h_2},
+                                        \dots, \frac{\phi_x|_{N^x-1}^n}{h_{N^x-1} + h_{N^x-2}}\bigg) \\
+\end{align*}
+Following the same procedure as for \eqref{eq:ForwardDiff}, we obtain the discretized version of \eqref{eq:phiEq}:
+\begin{align*}
+    \frac{\phi_i^{n+1}-\phi_i^n}{k} + \frac{1}{2}|\nabla \phi_i^n|^2 + g \eta_i^{n+1} = 0,
+\end{align*}
+which can be written in matrix form as
+\begin{align}
+    \label{eq:phin+1}
+    \bm{\phi}^{n+1} = \bm{\phi}^n - k\bigg(\frac{1}{2}\bm{\xi}^n + g \bm{\eta}^{n+1}\bigg),
+\end{align}
+where $\bm{\xi}^n = \Big(|\nabla \phi_1^n|^2, \dots,  |\nabla \phi_{N^x}^n|^2\bigg)^\top$.
+
+We note that we will need $\nabla \phi$ on each top face. To this end, we note that MFD gives us the fluxes on each half-face, $v_{f} \approx \int_{f} \nabla \phi \cdot n_{f} \, \d s$.
+Moreover, we know that any vector $\bm{v} \in \mathbb{R}^2$ can be written as $(\bm{v}\cdot\bm{n}_1) \bm{n}_1 + (\bm{v}\cdot\bm{n}_2) \bm{n}_2$,
+where $\bm{n}_1$ and $\bm{n}_2$ are two orthogonal vectors of unit length.
+Consider $\nabla \phi$ on a top half-face $f_t$, with corresponding right and left half-faces $f_r$ and $f_l$ sharing the same cell.
+If we are not altering the grid in the $x$-direction, we can then approximate $\nabla \phi|_{f_t}$ as
+\begin{align*}
+    \nabla \phi|_{f_t} \approx |f_t|^{-1} v_{f_t} \bm{n}_{f_t} + \frac{1}{2}(|f_r|^{-1}v_{f_r}-|f_l|^{-1}v_{f_l})\big(\bm{n}_{f_r} - (\bm{n}_{f_r} \cdot \bm{n}_{f_t})\bm{n}_{f_t}\big)
+\end{align*}
+
+We then choose $\nabla \phi|_{f_t}$ to be our approximation of $\nabla \phi$ at the centroid of $f_t$.
+
+A natural next step is now to implement the same procedure in three dimensions. To simplify the discretization, we first calculate
+the gradient of $\eta$ numerically, and then solve for $\eta^{n+1}$ explicitly. In matrix notation, we have
+\begin{align}
+    \label{eq:etan+13d}
+    \bm{\eta}^{n+1} = \bm{\eta}^n - k \big(\bm{\phi}_x^n, \bm{\phi}_y^n, \bm{\phi}_z^n\big)\cdot(\bm{\eta}_x^n, \bm{\eta}_y^n, -\bm{1}\big),
+\end{align}
+where the dot product matrices is understood to be the dot product of the rows forming each matrix.
+
+We denote the domain $\Omega^n := \Omega(t_n)$, and define $\mathcal{T}_h^n$ to be the discretization of $\Omega^n$
+at a time $t_n$. Moreover, we denote the discrete solution $\phi$ on $\mathcal{T}_h^n$ at time $t_n$ by $\bm{\Phi}^n$.
+
+We can now state an algorithm for solving the system \eqref{eq:IncompNavierStokes}. It is given in Algorithm \ref{alg:IncomNavierStokes}.
+%
+%    Algorithm
+%
+\begin{algorithm}
+    \caption{M(FD)$^2$S}
+    \begin{algorithmic}[1]
+    \State    \textbf{Input:} $\bm{\eta}^0$, $\bm{\phi}^0$, $\mathcal{T}_h^0$.
+        \For    {$n \leftarrow 0,N^t$}
+	    \State    Change $\mathcal{T}_h^n$ according to $\bm{\eta}^n$.
+            \State    Solve the first equation of \eqref{eq:IncompNavierStokes} with $f = \bm{\phi}^n$ to obtain
+                      $\bm{\Phi}^{n}$, $\bm{\phi}_x^n$ and $\bm{\phi}_z^n$ using MFD.
+			\If {Two dimensions}
+                \State    Calculate $\bm{\eta}^{n+1}$ from \eqref{eq:etan+1}
+			\ElsIf {Three dimensions}
+			    \State    Calculate $\bm{\eta}^{n+1}$ from \eqref{eq:etan+13d}
+			\EndIf
+        \State    Calculate $\bm{\phi}^{n+1}$ from \eqref{eq:phin+1}
+        \EndFor
+	\end{algorithmic}
+	\label{alg:IncomNavierStokes}
+\end{algorithm}
+%
+%    A method of characteristics    
+%
+\subsection{A method of characteristics}
 Assume a flat bottom, i.e, $a = 0$. We present a scheme for solving the coupled equations \eqref{eq:shallowWaterRiemannV} and \eqref{eq:shallowWaterRiemannW}. Along each characteristics, $x^V(t)$ and $x^W(t)$, $V$ and $W$ are constants. For small time steps we assume $\lambda_1$ and $\lambda_2$ constant, which gives the linear characteristics
 \begin{align}
 	\label{eq:characteristicEqVandW}
@@ -533,8 +653,8 @@ Assume a flat bottom, i.e, $a = 0$. We present a scheme for solving the coupled 
 \end{align}
 These two lines cross each other when 
 \begin{equation}
-\label{eq:characteristicCross}
-\Delta t_v = \frac{x_0^W - x_0^V + \lambda_2(x_0^W,t_0^W)(t_0^V - t_0^W)}{\lambda_1(x_0^V,t_0^V)+\lambda_2(x_0^W,t_0^W)}
+	\label{eq:characteristicCross}
+	\Delta t_v = \frac{x_0^W - x_0^V + \lambda_2(x_0^W,t_0^W)(t_0^V - t_0^W)}{\lambda_1(x_0^V,t_0^V)+\lambda_2(x_0^W,t_0^W)}
 \end{equation}
 
 Using this present a natural numerical solution given in  Algorithm \ref{alg:ShallowWaterConstSeaBed}.  
@@ -542,13 +662,13 @@ For the characteristics $x^V(t)$ and $x^W(t)$ starting in the same point $(x_i,t
 \begin{algorithm}
 	\caption{Shallow Water Constant Sea Bed}
 	\begin{algorithmic}[1]
-		\State    Input:$\{(x^0_i,t^0_i)\}_{i=1\ldots n}$, $\eta^0_i=\eta(x^0_i,t^0_i)$, $u^0_i = u(x_i^0,t^0_i)$,  $T$.
+		\State    Input:$\{(x^0_i,t^0_i)\}_{i=1,\ldots n}$, $\eta^0_i=\eta(x^0_i,t^0_i)$, $u^0_i = u(x_i^0,t^0_i)$,  $T$.
 
 		\State $j\leftarrow 0$
-		\While    {$\max t^j_i < T$}
+		\While    {$\max \{t^j\}_{i=1,\ldots,n} < T$}
 		\State $V^j_i \leftarrow u_i + 2\sqrt{\eta_i}$
 		\State $W^j_i \leftarrow u_i - 2\sqrt{\eta_i}$
-		\State From each point $(x^j_i,t^j_i)$, calculate crossing points using 		
+		\State From each point $(x^j_i,t^j_i)$, calculate the crossing points using 		
 		\eqref{eq:characteristicEqVandW} and \eqref{eq:characteristicCross}
 		\State Set $(x^{j+1}_i,t^{j+1}_i)$ equal to the crossing points.
 		\State $\eta_i^{j+1} \leftarrow \left(\frac{V_i^j -W_i^j}{4}\right)^2$
@@ -558,64 +678,53 @@ For the characteristics $x^V(t)$ and $x^W(t)$ starting in the same point $(x_i,t
 	\end{algorithmic}
 	\label{alg:ShallowWaterConstSeaBed}
 \end{algorithm}
-
-%\begin{figure}[!h]
-%\centering
-%\begin{subfigure}[b]{0.24\textwidth}
-%\includegraphics[width=\textwidth]{fig/shallowChar_1.eps}
-%\label{fig1}
-%\end{subfigure}
-%\begin{subfigure}[b]{0.24\textwidth}
-%\includegraphics[width=\textwidth]{fig/shallowChar_2.eps}
-%\label{fig1}
-%\end{subfigure}
-%\begin{subfigure}[b]{0.24\textwidth}
-%\includegraphics[width=\textwidth]{fig/shallowChar_4.eps}
-%\label{fig1}
-%\end{subfigure}
-%\begin{subfigure}[b]{0.24\textwidth}
-%\includegraphics[width=\textwidth]{fig/shallowChar_3.eps}
-%\label{fig1}
-%\end{subfigure}
-%\caption{Illustrating example of a 2D shallow water wave solved using Algorithm \ref{alg:ShallowWaterConstSeaBed}.}
-%\label{fig:2dWave}
-%\end{figure}
 %
 %    A fast and stable implementation
 %
-\subsubsection{A fast and stable implementation}
-We now proceed to implement the method described in \cite{somRef2}. The numerical flux $\mathcal{F}$ was approximated by
+\subsection{A fast and stable implementation}
+Finally, we proceed to implement the method described in \cite{somRef2}. The numerical flux $\mathcal{F}$ was approximated by
 \begin{align*}
     \mathcal{F}(U, W) = \frac{1}{2}\big(F(U) + F(W)\big),
 \end{align*}
 where $F(U) = \big(hu, hu^2 + \frac{1}{2}gh^2\big)^\top$.
-A plot of the solution is shown in Figure \ref{fig:Somfig}.
-%\begin{figure}
-%\centering
-%\begin{subfigure}[b]{0.24\textwidth}
-%\includegraphics[width=\textwidth]{fig/shallowChar_1.eps}
-%\label{fig1}
-%\end{subfigure}
-%\begin{subfigure}[b]{0.24\textwidth}
-%\includegraphics[width=\textwidth]{fig/shallowChar_2.eps}
-%\label{fig1}
-%\end{subfigure}
-%\begin{subfigure}[b]{0.24\textwidth}
-%\includegraphics[width=\textwidth]{fig/shallowChar_4.eps}
-%\label{fig1}
-%\end{subfigure}
-%\begin{subfigure}[b]{0.24\textwidth}
-%\includegraphics[width=\textwidth]{fig/shallowChar_3.eps}
-%\label{fig1}
-%\end{subfigure}
-%\caption{Illustrating example of a 2D shallow water wave solved using the method described in \cite{somRef2}}
-%\label{fig:2dWave}
-%\end{figure}
+%
+%    Numerical experiments
+%
+\section{Numerical experiments}
+\subsection{Arrival time and height of the wave}
+We have chosen to simulate two real-life scenarios. They are the following:
+
+\textbf{Hellesylt:} The wave travels $12$ km from Åkerneset to Hellesylt. The fjord depth is assumed to be at 300 m from 0 to 7 km, before it ascends linearly
+to 30 m at Hellesylt. The fjord width is assumed to be constant at 2 km. The initial energy of the wave is assumed to be of magnitude $10^{13}$ J. This is incorporated in the simulation by
+setting the initial wave profile to a bell curve such that it has a potential energy of $10^{13}$ J, and setting $\phi^0$ to zero.
+
+\textbf{Geiranger:} The wave travels $23$ km from Åkerneset to Geiranger. The fjord depth is assumed to be at 300 m from 0 to 7 km, before it ascends linearly
+to 30 m at Geiranger. The fjord width is assumed to be constant at 2 km. The initial energy is set to be $10^{13}$J, which is incorporated as in the latter case.
+
+The results are presented in Table \ref{tab:TimeHeight}. Videos of the simulations can be found in \cite{}.
+\begin{table}[H]
+	\begin{center}
+	    \begin{tabular}{l r r r r r r}
+	                     &    $\quad$    &    \multicolumn{2}{c}{M(FD)$^2$S}    &    $\quad$    &    \multicolumn{2}{c}{WBS$^2$}      \\
+	        Case         &               &    $T$ [s]    &    $\eta$ [m]        &               &    $T$ [s]    &    $\eta$ [m]    \\
+            \hline                                                                               
+            Hellesylt    &               &    260        &    18                &               &    123        &    123               \\
+            Geiranger    &               &    560        &    12                &               &    123        &        123               \\
+	    \end{tabular}
+	\end{center}
+	\caption{Numerical results for the arrival time and wave height at Hellesylt and Geiranger}
+	\label{tab:TimeHeight}
+\end{table}
+\subsection{Run-up}
+Finally, we exploit the nature of the method of characteristics to approximate the run-up, that is, the highest the wave reaches as it rinses up the mountain side. To this end, we
+approximate the ground in the fjord and up the hillside in Geiranger by the parabola $\frac{50}{1000^2}x^2$, where $x$ is the distance in meters from $1000$ m out in the fjord.
+The resulting run-up was XX. A video of the simulation can be found in \cite{}.    
 %
 %    Final remarks
 %
 \section{Final remarks}
-We have done a lot of stuff, whioch shiould fgive an A.
+Even though we have made several assumptions throughout this study, especially for the energy in the wave (+ andre ting?), we have been able to give good estimates of the creation,
+propagation and run-up of the wave. The estimated time for the wave to reach  the populated area is 3.5$-$4 minutes. We have also estimated that the wave will be around 20 m high when it reaches the populated area. 
 
 \clearpage
 \section*{Appendix}
