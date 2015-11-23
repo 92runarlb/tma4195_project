@@ -19,10 +19,15 @@ TMA4195 \\ \vspace{5pt}
 \hrule
 \vspace{0.5cm}
 \begin{abstract}
-	In this project we model a tsunami from a landslide at Åkerneset into Geirangerfjorden. Our main goal is to estimate the size of the tsunami
-	wave and the time it takes to reach the populated area Hellesylt. The development of the wave is studied in three phases; the creation of the wave,
-	the propagation and finally the run-up of the wave. \emph{Noen som kan skriver om de numeriske metodene.}
-	The main result of this project is that the wave uses about 3.5 minutes to reach Hellesylt and will be about 20 m high at this point. 
+%	In this project we model a tsunami from a landslide at Åkerneset into Geirangerfjorden. Our main goal is to estimate the size of the tsunami
+%	wave and the time it takes to reach the populated area Hellesylt. The development of the wave is studied in three phases; the creation of the wave,
+%	the propagation and finally the run-up of the wave. \emph{Noen som kan skriver om de numeriske metodene.}
+%	The main result of this project is that the wave uses about 3.5 minutes to reach Hellesylt and will be about 20 m high at this point. 
+%	
+	The tsunami from a landslide at Åkerneset into Geirangerfjorden has been studied using analytical tools, mathematical modeling and
+	numerical analysis. The energy transferred from the landslide to the water was found to have lower and upper bounds of $2\times 10^{11}$ J and $8 \time 10^{13}$ J,
+	respectively. The wave reached Hellesylt after 260 s with a height of 18 m, and Geiranger after 560 s with a height of 12 m. The run-up in Geiranger was found to
+	be 60 m.
 \end{abstract}
 \thispagestyle{empty}
 \clearpage
@@ -34,9 +39,12 @@ TMA4195 \\ \vspace{5pt}
 %    INTRODUCTION
 %
 \section{Introduction}
-In this project we will address the development of a tsunami wave in a fjord caused by a rock slide. We visualize the development as happening in three phases,
-the creation of the tsunami, the propagation of the wave and finally the run-up of the wave. We will give estimates for this by using methods from mathematical modeling,
-analysis and numerical analysis. We are particularly interested in the the time the wave uses to the populated areas and the height as it reaches these areas.
+The unstable rock slide at Åkerneset, and the resulting tsunami wave, is an announced disaster, and a well-studied problem \citep{harbitz14}, \citep{lothe10}. In such an event, we are particularly interested in the time it
+takes before the wave reaches the populated areas Hellesylt and Geiranger, and the height of the wave as this happens. In \cite{harbitz14}, the wave reaches Hellesylt after 270 s,
+with a height of 40 m, while it reaches Geiranger after 580 s, with a height of 20 m. Moreover, the run-up is found to be between 35-85 m in Hellesylt, and 30 - 70 m in Geiranger.
+
+In this report, we analyze the problem in three phases; the creation of the tsunami, the propagation of the wave and finally the run-up of the wave.
+We will give estimates for this by using methods from mathematical modeling, analysis and numerical analysis.
 
 \section{Governing Equations}
 
@@ -79,7 +87,7 @@ gives that the integral would be positive, which is a contradiction. Hence, we h
 %
 %    Conservation of Momentum
 %
-\subsection*{Conservation of Momentum}
+\subsection{Conservation of Momentum}
 Given a fluid volume $\Omega(t)$, containing the same water particles, we have that the exterior forces are
 due to the pressure forces exerted by the particles outside $\Omega(t)$ and the gravitation. Hence, Newton's second
 law yields
@@ -119,34 +127,24 @@ Hence, conservation of momentum yields
     \rho \bm{v}_t + \rho(\bm{v} \cdot \nabla) \bm{v} + \nabla p - \rho \bm{g} = 0.
 \end{align}
 %
-%    Two vector calculus results
+%    Simplifying the equations
 %
-\subsection{Two vector calculus results}
-With flow velocity being incompressible and with $\nabla \times \bm{v} = 0$ in mind, we can state that the flow velocity is path independent. Thus the flow velocity is the function of the gradient of some potential $\phi$.
-Furthemore, let $\phi$ be a scalar function, we have
+\subsection{Simplifying the equations}
+In order to simplify the equations, we assume that the flow is irrotational, $\nabla \times \bm{v} = 0$. Since
+our domain $\Omega$ is simply connected, Stokes theorem gives that
 \begin{align*}
-    \nabla \times \bm{v} = \nabla \times (\nabla \phi) = \nabla \times (\phi_x, \phi_y, \phi_z) =
-        \big(\phi_{zy} - \phi_{yz}, -(\phi_{zx} - \phi_{xz}), \phi_{xy} - \phi_{yx} \big).
+	\int_{\partial \mathcal{C}} \bm{v} \d s = \int_{\mathcal{C}} \nabla \times \bm{v} \, \d \bm{x}
 \end{align*}
-From the properties of the mixed partial derivative, we have $\phi_{x_i x_j} = \phi_{x_j x_i}$. Hence,
-\begin{align}
-    \label{eq:curlScalar}
-    \nabla \times (\nabla \phi) = 0 \quad \forall \text{ scalar functions } \phi.
-\end{align}
+This gives that the flow velocity is conservative. Thus the flow velocity is the function of the gradient
+of some potential $\phi$.
+
 We will also use the vector calculus identity
 \begin{align}
     \label{eq:vecCalc}
     \frac{1}{2}\nabla |\bm{v}|^2 = (\bm{v}\cdot \nabla) \bm{v} + \bm{v} \times (\nabla \times \bm{v}).
 \end{align}
-%
-%    Simplifying the equations
-%
-\subsection{Simplifying the equations}
-We now define our velocity to be the gradient of a scalar field $\phi$, that is, $\bm{v} = \nabla \phi$.
 
-We now want to simplify our equations. First, we want $\bm{v}$ to be irrotational, that is,
-$\nabla \times \bm{v} = 0$. Now, \eqref{eq:curlScalar} implies that $\bm{v}$ is the gradient of a scalar field
-$\phi$. Inserting $\bm{v} = \nabla \phi$, into \eqref{eq:vecCalc}, we obtain
+Inserting $\bm{v} = \nabla \phi$, into \eqref{eq:vecCalc}, we obtain
 \begin{align*}
     (\nabla \phi \cdot \nabla) \nabla \phi = \frac{1}{2}\nabla |\nabla \phi|^2
 \end{align*}
@@ -166,7 +164,7 @@ where $C(t)$ is a function of $t$ alone. Assuming
 we get that $C(t) = \frac{p_{atm}}{\rho}$.
 
 We also make the reasonable assumption that $\rho$ is a constant. \eqref{eq:massConservation} now reduces to
-$\nabla \cdot \bm{v} = \Delta \phi = 0$, which gives that the fluid is incompressible. We now have
+$\nabla \cdot \bm{v} = \Delta \phi = 0$, which gives that the flow is incompressible. We now have
 the equations
 \begin{align}
     \label{eq:IncompNavierStokes}
@@ -204,6 +202,114 @@ Furthermore inserting $z = \eta(x,y)$ into \eqref{eq:IncompNavierStokes} and usi
     \label{eq:phiEq}
     \frac{\partial \phi }{\partial t} + \frac{1}{2}|\nabla \phi |^2 + g\eta = 0.
 \end{equation}
+%
+% Generation of the wave
+%
+\section{Generation of the wave}
+The wave is generated by a rock falling into the water. We want to find the total energy of the rock with mass $m$ and velocity $v_R$ at height $z$. It is assumed that the rock is
+perfectly shaped as a rectangular box or cuboid that has height = 750 m and  width = breadth $\approx 268$ m for every cross-section of the rock in the $xy$-plane. This cross-section area
+is estimated to be  $A=72000$ m$^2$ and the volume is $V= 54 \cdot 10^6$ m$^3$. We assume the density of the rock to be the same as the density of concrete, that is $\rho_{R}=2400$ kg$/$m$^3$.
+We also assume the rock falls 150 m before landing in water.
+
+\subsection{Kinetic energy of rock at impact}
+First, we assume that the rock falls down a steep slope of the mountain with loose pebbels underneath working as a conveyor belt. This makes an assumption of zero friction and free fall reasonable.
+Then the speed of the rock as it reaches the water will be $v_{R,1}=55$ m/s from $mgh=\frac{1}{2}mv_R^2$. However it is more likely that the rock slides down an inclined plane with friction.
+We assume that this plane is angled by $\theta=45^{\circ}$  and the friction coefficient is $\gamma=0.6$, which makes the acceleration $a=g(\sin(\theta) - \gamma cos(\theta)) \approx 2.83$ m/s$^2$.
+The length of the inclined plane is $s=212$ m. Thus the velocity of the rock as it reaches water will now be estimated to be $v_{R,2}=\sqrt{2as} \approx 34.6$ m/s.
+Using $E =\frac{1}{2}m v_R^2$ for $v_{R,1}$ and $v_{R,2}$, we get a lower and upper estimate for the kinetic energy of the rock as it reaches water, $E_{upper} \approx 2 \cdot 10^{14}$ J and $E_{lower} \approx 7.8 \cdot 10^{13}$ J.
+
+\subsection{Terminal velocity of the rock}
+The rock may reach a constant velocity $v_{\infty}$. The rock achieves constant velocity when the sum of the forces acting upon it equals zero. Solving Newton's second law in equilibrium state for
+$v_{\infty}$ in presence of buoyancy force, gravity force and drag we get the equation
+\begin{align}
+    \label{terminal-lign}
+    F_g=F_b + D,
+\end{align}
+where $F_g=V\rho_{R}g$, $F_b= V \rho_{w}g$ and $D=\frac{1}{2}C_d\rho_{w}Av^2$. $C_d$ is the drag coefficient of the rock which for our assumed shape of the rock is $C_d=1.00$ for a smooth rock.
+Solving \eqref{terminal-lign} for $v$, we find that $v_{\infty} = 145$ m/s. 
+
+\subsection{Kinetic energy transferred to the wave}
+Lastly, we try to estimate the kinetic energy that can be transferred to water. An upper estimate for energy transferred to water is all the energy. This may not be realistic as the rock does not
+come to a complete stop when it hits the water. Some energy goes into noise, heat and motion that do not directly add up to the wave. Therefore, we make an upper estimate of 50\% of the energy going into the wave.
+It is difficult to give a lower bound, however we assume a lower bound to be 1\%. Using this information the upper and lower estimated energy going to the wave is $E_{lower}=7.8 \cdot 10^{11}$ J and $E_{upper}=10^{14}$ J.
+
+If the speed of the rock as it reaches water is close to the terminal speed, and the height of the mountain is sufficiently small it would be reasonable to additionally try to model the wave from the flux of water
+that the rock pushes out underneath itself instead of only the energy from the crash. Also the potential energy of the rock from the surface of the fjord to the bottom is assumed to not add up to the energy of the wave
+as water has high heat capacity and the speed of the rock is increasing. 
+
+\section{sometitle}
+
+The shallow water equations are 
+\begin{equation}
+V_t + \lambda_1 V_x = a
+\label{eqana:shallow1}
+\end{equation}
+\begin{equation}
+W_t + \lambda_2 W_x = a
+\label{eqana:shallow2}
+\end{equation}
+
+We have observed $W_x(0,x) = 0$. If we differentiate $\omega = W_x$ wrt $x$, then
+
+\begin{equation*}
+\frac{d \omega}{d x} = \omega_t + \left( \lambda_2 \omega_x \right) = 0
+\end{equation*}
+
+The means that $\omega = const$ and using the initial condition $W_x(0,x) = 0$ we get $\omega(t,x) = W_x(t,x) = 0$.
+
+\subsection{Reduction of the shallow water equations}
+We know that $V = u + 2 \sqrt{\eta}$, $W = u - 2 \sqrt{\eta}$ and $\lambda_1 = u + \sqrt{\eta}$. We also need some identities listed below:
+
+\begin{equation}
+\left(\frac{V-W}{4}\right)_x = \frac{V_x}{4} = \left( \sqrt{\eta}\right)_x
+\label{eqana:id1}
+\end{equation}
+
+\begin{equation}
+\left(\frac{V-W}{4}\right)_t = \frac{V_t - a}{4} = \left( \sqrt{\eta}\right)_t
+\label{eqana:id2}
+\end{equation}
+
+\begin{equation}
+\left(\frac{V+W}{2}\right)_x = \frac{V_x}{2} = u_x = 2\left( \sqrt{\eta}\right)_x
+\label{eqana:id3}
+\end{equation}
+
+\begin{equation}
+\left(\frac{V+W}{2}\right)_t = \frac{V_t + a}{2} = u_t = 2\left( \sqrt{\eta}\right)_x + a
+\label{eqana:id4}
+\end{equation}
+
+Since $W_x = 0$ we know that $a = W_t$, which makes us able to use identity \ref{eqana:id1} and \ref{eqana:id2} in equation \ref{eqana:shallow1}.
+\begin{equation*}
+\left( \frac{V_t - W_t}{4} \right)_x + \lambda_1 \left( \frac{V_x - W_x}{4} \right) = 0
+\end{equation*}
+
+which is equivalent with
+\begin{equation*}
+u_t + \lambda_1 u_x = a.
+\end{equation*}
+
+Identity \ref{eqana:id3} and \ref{eqana:id4} gives us an expression for $\lambda$ and a reduction of a system of two equations into a scalar equation:
+\begin{equation*}
+u_t + \left(\frac{3}{2}u - \frac{a}{2}t + c\right) u_x = a.
+\end{equation*}
+
+$c$ is a constant equal to the initial condition $u_0$.
+
+\subsection{Solving the shallow water equations}
+Using the method of characteristics we get 
+\begin{equation*}
+\frac{d u}{dt} = u_t + \left(\frac{3}{2}u - \frac{a}{2}t + u(0) \right) u_x = a.
+\end{equation*}
+
+This gives us that $u = at + C(x)$ as well as a formula for $\frac{d x}{d t}$, namely
+
+\begin{equation}
+\label{blablabla}
+\frac{d x}{d t} = \frac{3}{2}u - \frac{a}{2}t + u(0) = at + C(x).
+\end{equation}
+Solving \ref{blablabla} gives us that $x(t) = \frac{a}{2}t^2 + C(x) t + x_0$
 %
 %    Reduction of a linear model
 %
@@ -523,115 +629,6 @@ and
 	\end{aligned}
 \end{align}
 %
-% Generation of the wave
-%
-\section{Generation of the wave}
-The wave is generated by a rock falling into the water. We want to find the total energy of the rock with mass $m$ and velocity $v_R$ at height $z$. It is assumed that the rock is
-perfectly shaped as a rectangular box or cuboid that has height = 750 m and  width = breadth $\approx 268$ m for every cross-section of the rock in the $xy$-plane. This cross-section area
-is estimated to be  $A=72000$ m$^2$ and the volume is $V= 54 \cdot 10^6$ m$^3$. We assume the density of the rock to be the same as the density of concrete, that is $\rho_{R}=2400$ kg$/$m$^3$.
-We also assume the rock falls 150 m before landing in water.
-
-\subsection{Kinetic energy of rock at impact}
-First, we assume that the rock falls down a steep slope of the mountain with loose pebbels underneath working as a conveyor belt. This makes an assumption of zero friction and free fall reasonable.
-Then the speed of the rock as it reaches the water will be $v_{R,1}=55$ m/s from $mgh=\frac{1}{2}mv_R^2$. However it is more likely that the rock slides down an inclined plane with friction.
-We assume that this plane is angled by $\theta=45^{\circ}$  and the friction coefficient is $\gamma=0.6$, which makes the acceleration $a=g(\sin(\theta) - \gamma cos(\theta)) \approx 2.83$ m/s$^2$.
-The length of the inclined plane is $s=212$ m. Thus the velocity of the rock as it reaches water will now be estimated to be $v_{R,2}=\sqrt{2as} \approx 34.6$ m/s.
-Using $E =\frac{1}{2}m v_R^2$ for $v_{R,1}$ and $v_{R,2}$, we get a lower and upper estimate for the kinetic energy of the rock as it reaches water, $E_{upper} \approx 2 \cdot 10^{14}$ J and $E_{lower} \approx 7.8 \cdot 10^{13}$ J.
-
-\subsection{Terminal velocity of the rock}
-The rock may reach a constant velocity $v_{\infty}$. The rock achieves constant velocity when the sum of the forces acting upon it equals zero. Solving Newton's second law in equilibrium state for
-$v_{\infty}$ in presence of buoyancy force, gravity force and drag we get the equation
-\begin{align}
-    \label{terminal-lign}
-    F_g=F_b + D,
-\end{align}
-where $F_g=V\rho_{R}g$, $F_b= V \rho_{w}g$ and $D=\frac{1}{2}C_d\rho_{w}Av^2$. $C_d$ is the drag coefficient of the rock which for our assumed shape of the rock is $C_d=1.00$ for a smooth rock.
-Solving \eqref{terminal-lign} for $v$, we find that $v_{\infty} = 145$ m/s. 
-
-\subsection{Kinetic energy transferred to the wave}
-Lastly, we try to estimate the kinetic energy that can be transferred to water. An upper estimate for energy transferred to water is all the energy. This may not be realistic as the rock does not
-come to a complete stop when it hits the water. Some energy goes into noise, heat and motion that do not directly add up to the wave. Therefore, we make an upper estimate of 50\% of the energy going into the wave.
-It is difficult to give a lower bound, however we assume a lower bound to be 1\%. Using this information the upper and lower estimated energy going to the wave is $E_{lower}=7.8 \cdot 10^{11}$ J and $E_{upper}=10^{14}$ J.
-
-If the speed of the rock as it reaches water is close to the terminal speed, and the height of the mountain is sufficiently small it would be reasonable to additionally try to model the wave from the flux of water
-that the rock pushes out underneath itself instead of only the energy from the crash. Also the potential energy of the rock from the surface of the fjord to the bottom is assumed to not add up to the energy of the wave
-as water has high heat capacity and the speed of the rock is increasing. 
-
-\section{sometitle}
-
-The shallow water equations are 
-\begin{equation}
-V_t + \lambda_1 V_x = a
-\label{eqana:shallow1}
-\end{equation}
-\begin{equation}
-W_t + \lambda_2 W_x = a
-\label{eqana:shallow2}
-\end{equation}
-
-We have observed $W_x(0,x) = 0$. If we differentiate $\omega = W_x$ wrt $x$, then
-
-\begin{equation*}
-\frac{d \omega}{d x} = \omega_t + \left( \lambda_2 \omega_x \right) = 0
-\end{equation*}
-
-The means that $\omega = const$ and using the initial condition $W_x(0,x) = 0$ we get $\omega(t,x) = W_x(t,x) = 0$.
-
-\subsection{Reduction of the shallow water equations}
-We know that $V = u + 2 \sqrt{\eta}$, $W = u - 2 \sqrt{\eta}$ and $\lambda_1 = u + \sqrt{\eta}$. We also need some identities listed below:
-
-\begin{equation}
-\left(\frac{V-W}{4}\right)_x = \frac{V_x}{4} = \left( \sqrt{\eta}\right)_x
-\label{eqana:id1}
-\end{equation}
-
-\begin{equation}
-\left(\frac{V-W}{4}\right)_t = \frac{V_t - a}{4} = \left( \sqrt{\eta}\right)_t
-\label{eqana:id2}
-\end{equation}
-
-\begin{equation}
-\left(\frac{V+W}{2}\right)_x = \frac{V_x}{2} = u_x = 2\left( \sqrt{\eta}\right)_x
-\label{eqana:id3}
-\end{equation}
-
-\begin{equation}
-\left(\frac{V+W}{2}\right)_t = \frac{V_t + a}{2} = u_t = 2\left( \sqrt{\eta}\right)_x + a
-\label{eqana:id4}
-\end{equation}
-
-Since $W_x = 0$ we know that $a = W_t$, which makes us able to use identity \ref{eqana:id1} and \ref{eqana:id2} in equation \ref{eqana:shallow1}.
-\begin{equation*}
-\left( \frac{V_t - W_t}{4} \right)_x + \lambda_1 \left( \frac{V_x - W_x}{4} \right) = 0
-\end{equation*}
-
-which is equivalent with
-\begin{equation*}
-u_t + \lambda_1 u_x = a.
-\end{equation*}
-
-Identity \ref{eqana:id3} and \ref{eqana:id4} gives us an expression for $\lambda$ and a reduction of a system of two equations into a scalar equation:
-\begin{equation*}
-u_t + \left(\frac{3}{2}u - \frac{a}{2}t + c\right) u_x = a.
-\end{equation*}
-
-$c$ is a constant equal to the initial condition $u_0$.
-
-\subsection{Solving the shallow water equations}
-Using the method of characteristics we get 
-\begin{equation*}
-\frac{d u}{dt} = u_t + \left(\frac{3}{2}u - \frac{a}{2}t + u(0) \right) u_x = a.
-\end{equation*}
-
-This gives us that $u = at + C(x)$ as well as a formula for $\frac{d x}{d t}$, namely
-
-\begin{equation}
-\label{blablabla}
-\frac{d x}{d t} = \frac{3}{2}u - \frac{a}{2}t + u(0) = at + C(x).
-\end{equation}
-Solving \ref{blablabla} gives us that $x(t) = \frac{a}{2}t^2 + C(x) t + x_0$
-
-%
 %    Numerics
 %
 \section{Numerics}
@@ -647,7 +644,6 @@ $\phi$ at the top, along with $\eta$. Next, we use this solution in a forward-di
 difference/forward difference scheme, abbreviated M(FD)$^2$S.
 
 In order to obtain a discrete formulation of \eqref{eq:IncompNavierStokes}, we introduce the following notation:
-
 We assume the whole domain $\Omega$ is discretized into a union $\mathcal{T}_h$ of $N^x \times N^y$ adjecent, non-overlapping
 polygons with four edges. Further, we consider the top faces, at $z = \eta$, numbered from $1$ (left) to $N^x$ (right), and denote
 the centroid of face $i$ by $x_i$, so that $x_1 < x_2 < \dots < x_{N^x}$. We denote the distance between each centroid by
@@ -790,9 +786,9 @@ For the characteristics $x^V(t)$ and $x^W(t)$ starting in the same point $(x_i,t
 %    A fast and stable implementation
 %
 \subsection{A fast and stable implementation}
-Finally, we proceed to implement the method described in \cite{somRef2}. The numerical flux $\mathcal{F}$ was approximated by
+Finally, we proceed to implement the emph{fast and stable well-balanced scheme}, abbreviated WBS$^2$, described in \cite{audusse04}. The numerical flux $\mathcal{F}$ was approximated by
 \begin{align*}
-    \mathcal{F}(U, W) = \frac{1}{2}\big(F(U) + F(W)\big),
+    \mathcal{F}(U, W) = \frac{1}{2}\big(F(U) + F(W)\big) + \frac{1}{2} \frac{\Delta x}{\Delta t} (U - W),
 \end{align*}
 where $F(U) = \big(hu, hu^2 + \frac{1}{2}gh^2\big)^\top$.
 %
@@ -809,7 +805,7 @@ setting the initial wave profile to a bell curve such that it has a potential en
 \textbf{Geiranger:} The wave travels $23$ km from Åkerneset to Geiranger. The fjord depth is assumed to be at 300 m from 0 to 7 km, before it ascends linearly
 to 30 m at Geiranger. The fjord width is assumed to be constant at 2 km. The initial energy is set to be $10^{13}$J, which is incorporated as in the latter case.
 
-The results are presented in Table \ref{tab:TimeHeight}. Videos of the simulations can be found in \cite{}.
+The results are presented in Table \ref{tab:TimeHeight}. Videos of the simulations can be found in \cite{hellesyltMFDFD}, \cite{hellesyltWBSS}, \cite{geriangerWBSS} and \cite{geirangerMFDFD},
 \begin{table}[H]
 	\begin{center}
 	    \begin{tabular}{l r r r r r r}
@@ -824,17 +820,27 @@ The results are presented in Table \ref{tab:TimeHeight}. Videos of the simulatio
 	\label{tab:TimeHeight}
 \end{table}
 \subsection{Run-up}
-Finally, we exploit the nature of the method of characteristics to approximate the run-up, that is, the highest the wave reaches as it rinses up the mountain side. To this end, we
-approximate the ground in the fjord and up the hillside in Geiranger by the parabola $\frac{50}{1000^2}x^2$, where $x$ is the distance in meters from $1000$ m out in the fjord.
-The resulting run-up was XX. A video of the simulation can be found in \cite{}.    
+Finally, we exploit the nature of the WBS$^2$ method to approximate the run-up, that is, the highest the wave reaches as it rinses up the mountain side. To this end, we
+approximate the ground in the fjord and up the hillside in Geiranger by the parabola $\frac{50}{1000^2}x^2$, where $x$ is the distance in meters from $1000$ m out in the fjord. The initial condition was found from the
+M(FD)$^2$ simulation of the Geiranger case.
+The resulting run-up was almost 60 m. A video of the simulation can be found in \cite{geirangerUnUpWBS}.    
+\subsection{3D simulation}
+The M(FD)$^2$S method was also implemented in three dimensions in the unit cube. A video of the simulation
+can be found in \cite{MFDFD3dExample}.
 %
 %    Final remarks
 %
-\section{Final remarks}
-Even though we have made several assumptions throughout this study, especially for the energy in the wave (+ andre ting?), we have been able to give good estimates of the creation,
-propagation and run-up of the wave. The estimated time for the wave to reach  the populated area is 3.5$-$4 minutes. We have also estimated that the wave will be around 20 m high when it reaches the populated area. 
+\section{Conclusion}
+%Even though we have made several assumptions throughout this study, especially for the energy in the wave (+ andre ting?), we have been able to give good estimates of the creation,
+%propagation and run-up of the wave. The estimated time for the wave to reach  the populated area is 3.5$-$4 minutes. We have also estimated that the wave will be around 20 m high when it reaches the populated area. 
+The Tsunami wave resulting from the Åkerneset rock slide has been analyzed using analytical tools, mathematical modeling, and numerical simulations. ADD ABOUT ANALYSIS/MODELLING. ENERGY
 
-\bibliographystyle{apa}
+Numerical experiments agrees with the results in \citep{harbitz14}. The biggest difference is in the wave height just before it hits land. Some reasons for this may be that we use different initial conditions and different 
+bottom topology.
+
+Further work would be to implement the M(FD)$^2$S method for general grids, and a full scale 3D simulation.
+
+\bibliographystyle{plain}
 \bibliography{refs}  
 
 \end{document}
