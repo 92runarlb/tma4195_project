@@ -3,15 +3,15 @@ clc; clear; close all;
 g = 9.81;
 
 
-xstart=-1.5e4;
-xend = 1e4;
+xstart=-10;
+xend = 10;
 
 T = 10*60;
-dt = 0.005;
+dt = 0.01;
 dx = 1;
 
-epsilon = 5e4;
-waveHeight = 40;
+epsilon = 12;
+waveHeight = 5;
 seaLevel = 0;
 plotCenter = 0;
 u_0 = @(x) 0*ones(size(x,1),1);
@@ -36,11 +36,13 @@ Z = h.*u;
 %F = [];
 %f = figure('units','normalized','outerposition',[0 0 1 1]);
 
-takePicture = 0:0.2:T;
+takePicture = 0:1:T;
 takePicIndex = 1;
 removeLeftPart = 1:1:T;
 removeLeftPartIndex=1;
 etaPic = [];
+F = [];
+f = figure('units','normalized','outerposition',[0 0 1 1]);
 for t= 0:dt:T
 
     zExt = [z(1); z; z(end)];
@@ -75,29 +77,35 @@ for t= 0:dt:T
     plotCenter = x(plotCenter+startIndex);
     hold on
     plot(x,z);
-    axis([plotCenter-500,plotCenter+500,seaLevel-waveHeight,seaLevel+waveHeight])
-    title(t)
-    pause(0.0000000000000001)
-    if t>=takePicture(takePicIndex)
-        etaPic = [etaPic, h + z];
-        takePicIndex = takePicIndex + 1
-    end
+    %axis([plotCenter-5,plotCenter+5,seaLevel-waveHeight,seaLevel+waveHeight])
+    xlabel('Distance from Rock Fall [m]')
+    ylabel('Distance from Bottom [m]')
+    title(strcat('Time: ', num2str(t)))
+    title(strcat('Time: ', num2str(max(t))))
+
+    pause(0.001)
+    
+%     pause(0.0000000000000001)
+%     if t>=takePicture(takePicIndex)
+%         F = [F, getframe(f)];
+%         takePicIndex = takePicIndex + 1
+%     end
     
 
-    
-    if plotCenter>xend - 200
-        break
-    end
+%     
+%     if plotCenter>xend - 200
+%         break
+%     end
     
 end
 
-save('wellBalanced10k.mat','etaPic','x')
+%save('wellBalanced10k.mat','etaPic','x')
 
 % close all
 % 
-% name = strcat('shallowWaterChangingBottom',num2str(xstart),'_',num2str(xend),'_',num2str(T),'_','.avi');
-% myVid = VideoWriter(name);
-% myVid.FrameRate = round(24);
-% open(myVid);
-% writeVideo(myVid, F);
-% close(myVid)
+name = strcat('shallowWaterChangingBottom',num2str(xstart),'_',num2str(xend),'_',num2str(T),'_','.avi');
+myVid = VideoWriter(name);
+myVid.FrameRate = round(20);
+open(myVid);
+writeVideo(myVid, F);
+close(myVid)
