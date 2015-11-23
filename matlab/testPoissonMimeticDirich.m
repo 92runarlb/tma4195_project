@@ -4,27 +4,27 @@ mrstModule add mimetic
 g = 9.81;
 
 % Set up a Cartesian grid.
-nx = 120;
+nx = 150;
 ny = 10;
-xMax = 1.7;
-yMax = 1;
+xMax = 12000;
+yMax = 300;
 gridLimits = [xMax, yMax];
 dx = 1/nx;
 G = cartGrid([nx, ny], [xMax, yMax]);
 G = computeGeometry(G);
 
-T = 4;
-k = 0.01;
+T = 400;
+k = 2;
 
 % Define initial values
 
 %hStart = 1; hEnd = 0.2; x1 = 0.75; x2 = 1.3;
-hStart = 0.3; hEnd = 0.02; x1 = 0.9; x2 = 1.3;
+hStart = yMax; hEnd = 0.1*yMax; x1 = 0.8*xMax; x2 = 0.9*xMax;
 
 
 xCenter = 1.3;
 
-bottomType = 'shallow';
+bottomType = 'final';
 
 %h = @(x) -0.25*atan(60*(x-xCenter)/xMax)./pi +0.145;
 
@@ -32,12 +32,12 @@ bottomType = 'shallow';
 %h = @(x) max(hStart,min((hEnd-hStart)/(x2-x1)*(x-x1) + hStart,hEnd));%ones(size(x,1),1);
 h = @(x) min(hStart,max((hEnd-hStart)/(x2-x1)*(x-x1) + hStart,hEnd));%ones(size(x,1),1);
 hPlot = @(x) h(x); % 0.1*min(hStart,max((hEnd-hStart)/(x2-x1)*(x-x1) + hStart,hEnd));
-epsilon = 5e-3;
-eta_0 = @(x) zeros(size(x,1),1);
-phi_top_0 = @(x) 0.08*exp(-(x-.75).^2/epsilon); %zeros(size(x,1),1);
+epsilon = xMax*1e1;
+eta_0 = @(x) 50*exp(-(x-0.2*xMax).^2/epsilon);%zeros(size(x,1),1);
+phi_top_0 = @(x) zeros(size(x,1),1);%3700*exp(-(x-0.2*xMax).^2/epsilon); %zeros(size(x,1),1);
 
 top_faces = (1 : G.faces.num)';
-top_centroids = G.faces.centroids(G.faces.centroids(:, 2) == 1);
+top_centroids = G.faces.centroids(G.faces.centroids(:, 2) == gridLimits(2));
 
 eta_old = eta_0(G.nodes.coords(:,1));
 phi_top_old = phi_top_0(top_centroids);
@@ -85,12 +85,23 @@ for t=0:k:T
     eta = [eta1; eta; eta2];
 
     x = 0:xMax/nx:xMax;
-    plot(x,eta,x,-hPlot(x));
-    axis([0.4, xMax, -0.3, 0.030]);
-    axis off;
-    %axis([0.4, xMax, -0.11, 0.025]);
+    %plot(x,eta,x,-hPlot(x));
+    %axis([0.4, xMax, -0.3, 0.030]);
+    %axis off;
+    bl = [0 0.4470 0.7410];
+    plotGrid(Gnew,'facecolor', bl, 'edgecolor', bl);
+    etaMax = eta(end);%eta(abs(centroids - 10000) < 41);
+    etaMax = round(etaMax(1));
+    axis([0, xMax, -0.2*yMax, 0.2*yMax]);
+    titleString = {strcat('Time: ', num2str(t), ' s') ...
+                   strcat('\eta: ', num2str(etaMax), ' m')};
+    dim = [.8 .55 .3 .3];
+    annotation('textbox', dim, 'String', titleString, 'FitBoxToText', 'on');
+%     tbx = uicontrol('style','text')
+%     set(tbx,'String',titleString)
+    xlabel('x [m]');
+    ylabel('z [m]');
     F = [F, getframe(f)];
-    
 %     x = 0:xMax/(nx):xMax;
 %     x = x(1:end-1);
 %     figure(2);
@@ -102,6 +113,8 @@ for t=0:k:T
     %prep eta for next iteration
     eta = repmat(eta,ny+1,1);
     pause(0.0001)
+    %pause()
+    clf;
 end
 
 close all
