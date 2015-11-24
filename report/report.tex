@@ -545,44 +545,42 @@ and
 	\end{aligned}
 \end{align}
 \subsection{Analytical solution}
+We assume $W_x(0,x) = 0$. If we differentiate $\omega = W_x$ with respect to $x$, then
 
-We assume $W_x(0,x) = 0$. If we differentiate $\omega := W_x$ with respect to $x$. Then
-\begin{equation*}
-\frac{d \omega}{d x} = \omega_t + \left( \lambda_2 \omega_x \right) = 0
-\end{equation*}
-The means that $\omega$ is constant. Using the initial condition $W_x(0,x) = 0$ we get $\omega(t,x) = W_x(t,x) = 0$.
+\begin{equation}
+	\frac{d \omega}{d x} = \omega_t + \left( \lambda_2 \omega_x \right) = 0
+\end{equation}
+The means that $\omega$ is constant, and using the initial condition $W_x(0,x) = 0$ we get $\omega(t,x) = W_x(t,x) = 0$.
 
-We need the following identities
+
+Since $W_x = 0$, equation \eqref{eq:shallowWaterRiemannW} gives us $a = W_t$. We can then set up  the following identities
 \begin{align}
-\left(\frac{V-W}{4}\right)_x = \frac{V_x}{4} = \left( \sqrt{\eta}\right)_x,& \quad \left(\frac{V-W}{4}\right)_t = \frac{V_t - a}{4} = \left( \sqrt{\eta}\right)_t, \label{eqana:id1}\\
-\left(\frac{V+W}{2}\right)_x = \frac{V_x}{2} = u_x = 2\left( \sqrt{\eta}\right)_x
-, &\quad \left(\frac{V+W}{2}\right)_t = \frac{V_t + a}{2} = u_t = 2\left( \sqrt{\eta}\right)_t + a
+\left(\frac{V-W}{4}\right)_x = \frac{V_x}{4} = \left( \sqrt{\eta}\right)_x,& \quad
+\left(\frac{V+W}{2}\right)_x = \frac{V_x}{2} = u_x \label{eqana:id1}\\ 
+\left(\frac{V-W}{4}\right)_t = \frac{V_t - a}{4} = \left( \sqrt{\eta}\right)_t,  &\quad \left(\frac{V+W}{2}\right)_t = \frac{V_t + a}{2} = u_t.
 \label{eqana:id3}
 \end{align}
+From Equation \eqref{eqana:id1} we get $u_x = 2\left( \sqrt{\eta}\right)_x$, and from Equation \eqref{eqana:id3} we get $2u_t  =\left( \sqrt{\eta}\right)_t + a$. Solving this system of equation we obtain $u = 2\sqrt{\eta}+at+ C$, where $C$ is a constant. Setting $t=0$, we see that $C = u(0,x)-2\sqrt{\eta}$. This is valid for any $x$, which impose a restriction on the initial conditions. Inserting $u$ into the expression for $\lambda_1$, gives us $\lambda_1 = 3 \sqrt{\eta} + at+C$. Rearranging the terms in \eqref{eq:shallowWaterRiemannV}, and using the identities \eqref{eqana:id1} and \eqref{eqana:id3} yields
+\begin{equation}
+	\left(\sqrt{\eta}\right)_t + \left( 3 \sqrt{\eta} + at + C \right) \left(\sqrt{\eta}\right)_x = 0.
+\end{equation}
 
 
-Since $W_x = 0$ we know that $a = W_t$. Inserting the identities \eqref{eqana:id1}  into equations \eqref{eq:shallowWaterRiemannW} and \eqref{eq:shallowWaterRiemannV} we get
-\begin{equation*}
-\left( \frac{V_t - W_t}{4} \right)_x + \lambda_1 \left( \frac{V_x - W_x}{4} \right) = 0.
-\end{equation*}
-This is equivalent to
-\begin{equation*}
-u_t + \lambda_1 u_x = a.
-\end{equation*}
 
-Identities \eqref{eqana:id3} gives us an expression for $\lambda_1$ and a reduction of a system of two equations into a scalar equation:
-\begin{equation*}
-u_t + \left(\frac{3}{2}u - \frac{a}{2}t + u_0\right) u_x = a,\quad u_0 = u(0,x).
-\end{equation*}
-Using the method of characteristics we get system of equations
+Using the method of characteristics we can set up the system of equations 
 \begin{equation*}
 \label{blablabla}
 \begin{cases}
-\frac{d u(t,x(t))}{dt} = a\\
-\frac{d x}{d t} = \frac{3}{2}u - \frac{a}{2}t + u_0.
+\frac{d \sqrt{\eta(t,x(t))}}{dt} = 0\\
+\frac{d x(t)}{d t} = 3 \sqrt{\eta} + at + u(0,x(0)) - 2\sqrt{\eta (0,x(0))} .
 \end{cases}
 \end{equation*}
-This gives us that $u = at + u_0$ and  $x(t) = \frac{a}{2}t^2 + C(x) t + x_0$.
+Solving this system yields that $\eta$ is constant along the characteristic lines
+\begin{equation}
+	x(t) = 3 \left(\sqrt{\eta\left(x(0),0\right)}+ u(0,x(0)) - 2\sqrt{\eta (0,x(0))} \right)t + \frac{a}{2}t^2 + x(0).
+\end{equation}
+
+The method of characteristics tells us that $\eta$ remains constant as the wave reaches the shore and the seafloor rises. This would indicate that any wave would eventually gain an amplitude equal to the depth of the sea as it reaches the shore. Needless to say, this does not correspond well with our numerical results. As it depends on unreasonable assumptions it serves merely as a proof of concept rather than an accurate solution to our problem.
 
 
 %
